@@ -1,50 +1,50 @@
 #import "Tweak.h"
 
 
-%hook UserSectionViewController
+@interface UINavigationItem()
+@property(nonatomic, strong, readwrite)UIBarButtonItem *customRightItem;
+@property(nonatomic, strong, readwrite)UIBarButtonItem *customLeftItem;
+@property(nonatomic, strong, readwrite)UIView *customTitleView;
+@end
+%hook JDLMainFeedNavigationController
 
--(void)setTableView:(id)arg1{
-    NSLog(@"JodelTheos tableView : %@", arg1);
+-(void)viewDidLoad{
+    NSLog(@"JodelTheos MFNC viewDidLoad called");
+    %orig;
+    UIView *view = [self view];
+    for(UINavigationBar *subView in view.subviews) {
+        if([subView isMemberOfClass:[UINavigationBar class]]){
+            UINavigationItem *item = subView.items[0];
+            NSLog(@"JodelTheos MFNC navBar.item :\n%@", item);
+            NSLog(@"JodelTheos MFNC navBar.item.customRightItem :\n%@", item.customRightItem);
+            NSLog(@"JodelTheos MFNC navBar.item.customLeftItem :\n%@", item.customLeftItem);
+            NSLog(@"JodelTheos MFNC navBar.item.customTitleView :\n%@", item.customTitleView);
+            UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Test" style:UIBarButtonItemStylePlain target:self action:nil];
+            item.customLeftItem = backButton;
+        }
+    }
+}
+
+%end
+
+%hook DefaultNavigationController
+
+-(id)initWithRootViewController:(UIViewController *)rootViewController{
+    id orig = %orig;
+    //NSLog(@"JodelTheos DNC rooVC : %@\norig : %@", rootViewController, orig);
+
+    return orig;
+}
+
+-(void)viewDidLoad{
+    //NSLog(@"JodelTheos DNC viewDidLoad called");
     %orig;
 }
 
 %end
 
-%hook UserSectionTableDataSource
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    NSInteger orig = %orig;
-    NSLog(@"JodelTheos Section ; %ld : Rows : %ld ",section, orig);
-    if(section == 1) {
-        
-        NSLog(@"JodelTheos Section ; %ld : Rows + 1 : ",section);
-        return 6;
-        
-    }
-    return orig;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"JodelTheos IndexPath : %@",indexPath);
-    if(indexPath.section == 1 && indexPath.row == 6){
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"idkFFS"];
-        cell.textLabel.text = @"Hellow World!";
-        NSLog(@"JodelTheos IndexPath6 : %@",indexPath);
-        return cell;
-    }
-
-    UITableViewCell *cell = %orig;
-    NSLog(@"JodelTheos IndexPath : %@ : Cell : %@ ",indexPath,  cell);
-    return cell;
-}
-
-
-
-%end
-
-
 
 %ctor {
-    %init(UserSectionTableDataSource=objc_getClass("Jodel.UserSectionTableDataSource"),
-    UserSectionViewController=objc_getClass("Jodel.UserSectionViewController"));
+    %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),
+    DefaultNavigationController=objc_getClass("Jodel.DefaultNavigationController"));
 }

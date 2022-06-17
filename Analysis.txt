@@ -4,3 +4,7 @@ Jodel.UserSectionViewController -> Jodel.UIGroupedTableView -> subview UITableVi
 Jodel.UserSectionTableDataSource is the tressure
 
 add my code in 1st section in row 6
+
+JDLMainFeedViewController
+jodel.JDLMainFeedNavigationController > view > subview > UINavigationBar > items > UINavigationItem
+Jodel.DefaultNavigationController
