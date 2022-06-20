@@ -1,3 +1,0 @@
-@interface JDLMainFeedNavigationController : UINavigationController
-
-@end
