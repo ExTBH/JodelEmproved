@@ -19,9 +19,8 @@
 
 -(BOOL)addSettingsButton{
     @try {
-        //UIButton *btn = [[[JDEButtons alloc] init] defaultButton];
-        UIView *superView = [JDLMainFeedNavigationController viewIfLoaded]; 
-        NSLog(@"JDELogs %@ YES\n%s ", superView, __PRETTY_FUNCTION__);
+        //UIButton *btn = [[[JDEButtons alloc] init] defaultButton]; 
+        NSLog(@"JDELogs YES\n%s ", __PRETTY_FUNCTION__);
     }
     @catch(NSException *exception){
         NSLog(@"JDELogs catch YES\n%s ", __PRETTY_FUNCTION__);
