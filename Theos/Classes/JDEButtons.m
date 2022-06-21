@@ -13,7 +13,7 @@
     [btn setTintColor:[UIColor colorWithRed:1 green:0.710 blue:0.298 alpha:1]];
     //sizes
     btn.layer.borderWidth = 2;
-    btn.titleLabel.font = [UIFont systemFontOfSize:20];
+    btn.titleLabel.font = [UIFont systemFontOfSize:15];
     btn.layer.cornerRadius = 10;
 
     return btn;

@@ -3,5 +3,5 @@
 
 @interface JDEViewController : UIViewController
 - (void)viewDidLoad;
--(BOOL)addSettingsButton;
+-(BOOL)addSettingsButtonForView:(UIView*)view;
 @end
