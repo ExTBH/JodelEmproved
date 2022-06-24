@@ -15,7 +15,6 @@ JDEViewController *JDEvc;
 
 -(void)viewDidLoad{
     %orig;
-    //UIView *view = [self viewIfLoaded];
     UIViewController *JDLmainFeedViewController = [[self childViewControllers] firstObject];
     JDEvc= [[JDEViewController alloc] init];
 
@@ -28,7 +27,6 @@ JDEViewController *JDEvc;
         [alert addAction:dismissAlert];
         [JDLmainFeedViewController presentViewController:alert animated:YES completion:nil];
     }
-    //[self addChildViewController:JDEvc];
 }
 
 %new

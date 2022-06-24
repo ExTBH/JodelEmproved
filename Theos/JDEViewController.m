@@ -2,19 +2,67 @@
 
 
 // Private declarations; this class only.
-@interface JDEViewController()
+@interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource, UINavigationBarDelegate>
+@property(strong,nonatomic) UITableView *tableView;
 @end
 
 @implementation JDEViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithRed: 0.73 green: 0.33 blue: 0.83 alpha: 0.5];
-    NSLog(@"JDELogs %s ", __PRETTY_FUNCTION__);
-    //Alert for if the -addSettingsButton Failed.
+    
+    //Objects
+    UINavigationBar *navBar = [[UINavigationBar alloc] init];
+    UINavigationItem *navItem = [[UINavigationItem alloc] init];
+    [navItem setTitle:@"EMPROVED"];
+    UIBarButtonItem *closeButton =  [[UIBarButtonItem alloc] initWithTitle:@"Close"
+                                                            style:UIBarButtonItemStylePlain
+                                                            target:self
+                                                            action:@selector(removeSettingsVC:)];
+    _tableView = [[UITableView alloc] init];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+
+    //Set Views
+    _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    navBar.translatesAutoresizingMaskIntoConstraints = NO;
+    navBar.translucent = NO;
+    navBar.items = @[navItem];
+    [navItem setLeftBarButtonItem:closeButton];
+    navItem.leftBarButtonItem.tintColor = UIColor.whiteColor;
+
+
     
 
+    //Styles
+    self.view.backgroundColor = [UIColor blackColor];
+    _tableView.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.sectionFooterHeight = UITableViewAutomaticDimension;
+    navBar.barTintColor = UIColor.whiteColor;//[UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
+    navItem.leftBarButtonItem.tintColor = UIColor.whiteColor;
 
+    //SubViews
+    [self.view addSubview:navBar];
+    [self.view addSubview:_tableView];
+
+    //Constraints
+    [navBar.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
+    [navBar.widthAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.widthAnchor].active = YES;
+    
+    [_tableView.topAnchor constraintEqualToAnchor:navBar.safeAreaLayoutGuide.bottomAnchor].active = YES;
+    [_tableView.widthAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.widthAnchor].active = YES;
+    [_tableView.heightAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.heightAnchor].active = YES;
+}
+
+-(void)removeSettingsVC:(id)sender{
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)switchValueChanged:(UISwitch*)sender{
+    
+    NSLog(@"sender %@ : %d", sender.accessibilityIdentifier, sender.isOn);
+    
 }
 
 -(BOOL)addSettingsButtonForView:(UIView*)view{
@@ -36,5 +84,62 @@
     }
 }
 
+
+- (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"settingsCell"];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    cell.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
+    cell.textLabel.text = @"Download Images";
+    cell.textLabel.textColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
+    cell.textLabel.textAlignment = NSTextAlignmentLeft;
+    
+    UISwitch *switchCell = [[UISwitch alloc] init];
+    switchCell.onTintColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
+    switchCell.accessibilityIdentifier = @"seve_images";
+    [switchCell addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
+    cell.accessoryView = switchCell;
+    
+    switch (indexPath.row) {
+        case 0:
+            cell.textLabel.text = @"Fake Karma";
+            switchCell.accessibilityIdentifier = @"spoofed_karma";
+            break;
+        case 1:
+            cell.textLabel.text = @"Download Images";
+            switchCell.accessibilityIdentifier = @"save_posts";
+            break;
+        case 2:
+            cell.textLabel.text = @"Screenshot Protection";
+            switchCell.accessibilityIdentifier = @"disable_screenshot";
+            break;
+
+    }
+
+    
+    return cell;
+}
+
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 3;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    UITableViewHeaderFooterView *footer = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"footer"];
+    
+    
+    footer.textLabel.text = @"Jodel EMPROVED By ExT (1.0.0 ALPHA)";
+    footer.textLabel.textColor = UIColor.lightGrayColor;
+    footer.textLabel.textAlignment = NSTextAlignmentLeft;
+    footer.textLabel.font = [UIFont systemFontOfSize:10];
+    
+    
+    UILabel *label = [[UILabel alloc] init];
+    [label setText:@"\tJodel EMPROVED By @ExT_BH (1.0.0)"];
+    [label setFont:[UIFont systemFontOfSize:15]];
+    [label setTextColor:[UIColor lightGrayColor]];
+    
+    return label;
+}
 
 @end

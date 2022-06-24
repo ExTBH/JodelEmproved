@@ -1,9 +1,9 @@
-Package: com.yourcompany.jodelemproved
+Package: xyz.extbh.jodelemproved
 Name: JodelEmproved
-Version: 0.0.1
+Version: 0.0.2
 Architecture: iphoneos-arm
-Description: Shitty ++ for jodel
+Description: Jodel+
 Maintainer: ExT
-Author: ExT
+Author: ExT (emproved@extbh.xyz)
 Section: Tweaks
 Depends: mobilesubstrate (>= 0.9.5000)
