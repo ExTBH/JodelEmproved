@@ -13,12 +13,19 @@
     
     //Objects
     UINavigationBar *navBar = [[UINavigationBar alloc] init];
+    navBar.standardAppearance = [[UINavigationBarAppearance alloc] init];
+    [navBar.standardAppearance configureWithDefaultBackground];
+
     UINavigationItem *navItem = [[UINavigationItem alloc] init];
     [navItem setTitle:@"EMPROVED"];
+
     UIBarButtonItem *closeButton =  [[UIBarButtonItem alloc] initWithTitle:@"Close"
                                                             style:UIBarButtonItemStylePlain
                                                             target:self
                                                             action:@selector(removeSettingsVC:)];
+
+
+    closeButton.tintColor = UIColor.redColor;
     _tableView = [[UITableView alloc] init];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -29,7 +36,6 @@
     navBar.translucent = NO;
     navBar.items = @[navItem];
     [navItem setLeftBarButtonItem:closeButton];
-    navItem.leftBarButtonItem.tintColor = UIColor.whiteColor;
 
 
     
@@ -39,8 +45,8 @@
     _tableView.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.sectionFooterHeight = UITableViewAutomaticDimension;
-    navBar.barTintColor = UIColor.whiteColor;//[UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
-    navItem.leftBarButtonItem.tintColor = UIColor.whiteColor;
+    navItem.leftBarButtonItem.tintColor = UIColor.blackColor;
+    navBar.standardAppearance.backgroundColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
 
     //SubViews
     [self.view addSubview:navBar];
@@ -60,8 +66,25 @@
 }
 
 -(void)switchValueChanged:(UISwitch*)sender{
+
+    NSLog(@"JDELogs");
     
-    NSLog(@"sender %@ : %d", sender.accessibilityIdentifier, sender.isOn);
+    switch (sender.tag) {
+        case 0:
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+    }
     
 }
 
@@ -84,6 +107,9 @@
     }
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 1;
+}
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"settingsCell"];

@@ -56,6 +56,25 @@ JDEViewController *JDEvc;
 %end
 
 
+//Enable Paste In New Posts
+%hook PlaceholderTextView
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+    
+    if (action == @selector(paste:))
+        return YES;
+    if (action == @selector(copy:))
+        return YES;
+    if (action == @selector(selectAll:))
+        return YES;
+    return %orig;
+}
+
+%end
+
+
 %ctor {
-    %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"));
+    %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),
+    PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"));
 }

@@ -1,0 +1,4 @@
+debug:
+    -AppVersion: [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
+    -MinIOSversion: [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MinimumOSVersion"]
+
