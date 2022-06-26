@@ -1,68 +1,68 @@
 {
     "sections": {
         "General": [
-            {"save_images": {
+            {
                 "name": "Download images",
                 "description": null,
                 "accessory_view": "switch",
                 "default": true,
-                "disabled": false,
-                "tag": 0
-                }
+                "disabled": true,
+                "tag": "0"
+                
             },
-            {"upload_images": {
+            {
                 "name": "Upload from gallery",
                 "description": null,
                 "accessory_view": "switch",
                 "default": true,
-                "disabled": false,
-                "tag": 1
-                }
+                "disabled": true,
+                "tag": "1"
+                
             },
-            {"spoof_location": {
+            {
                 "name": "Location spoofer",
                 "description": null,
                 "accessory_view": "switch",
                 "default": false,
-                "disabled": false,
-                "tag": 2
-                }
+                "disabled": true,
+                "tag": "2"
+                
             },
-            {"confirm_votes": {
+            {
                 "name": "Confirm votes",
                 "description": null,
                 "accessory_view": "switch",
                 "default": true,
-                "disabled": false,
-                "tag": 3
-                }
+                "disabled": true,
+                "tag": "3"
+                
             },
-            {"confirm_replies": {
+            {
                 "name": "Confirm replies",
                 "description": null,
                 "accessory_view": "switch",
                 "default": true,
-                "disabled": false,
-                "tag": 4
-                }
+                "disabled": true,
+                "tag": "4"
+                
             },
-            {"disable_screenshot": {
+            {
                 "name": "Screenshot protetion",
                 "description": null,
                 "accessory_view": "switch",
                 "default": true,
-                "disabled": false,
-                "tag": 5
-                }
+                "disabled": true,
+                "tag": "5"
+                
             },
-            {"disable_tracking": {
+            {
                 "name": "Tracking protetion",
                 "description": null,
                 "accessory_view": "switch",
                 "default": true,
-                "disabled": false,
-                "tag": 6
-                }
+                "disabled": true,
+                "tag": "6"
+                
             }
         ]
     }

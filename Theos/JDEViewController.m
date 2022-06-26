@@ -3,13 +3,26 @@
 
 // Private declarations; this class only.
 @interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource, UINavigationBarDelegate>
-@property(strong,nonatomic) UITableView *tableView;
+@property (strong,nonatomic) UITableView *tableView;
+@property (strong,nonatomic) NSDictionary *config;
+@property (strong,nonatomic) NSDictionary *sections;
+@property (strong,nonatomic) NSArray *generalSection;
 @end
 
 @implementation JDEViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+
+    NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
+    NSString *configPath = [mainBundle pathForResource:@"config" ofType:@"json"];
+
+    _config = [self dictFromFile:configPath];
+    _sections = [_config objectForKey:@"sections"];
+    _generalSection = [_sections objectForKey:@"General"];
+
+
+    
     
     //Objects
     UINavigationBar *navBar = [[UINavigationBar alloc] init];
@@ -61,21 +74,21 @@
     [_tableView.heightAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.heightAnchor].active = YES;
 }
 
+- (NSDictionary*)dictFromFile:(NSString*)filePath{
+
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+
+    return [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+}
+
 -(void)removeSettingsVC:(id)sender{
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)switchValueChanged:(UISwitch*)sender{
-    #define PATH "Library/Application Support/JodelEmproved.bundle"
 
-    NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
 
-    NSString *configPath = [mainBundle pathForResource:@"config" ofType:@"json"];
 
-    NSData *configData = [NSData dataWithContentsOfFile:configPath];
-
-    NSString *config = [[NSString alloc] initWithData:configData encoding:NSUTF8StringEncoding];
-    NSLog(@"JDELogs\n%@", config);
     
     switch (sender.tag) {
         case 0:
@@ -116,7 +129,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 1;
+    return [_sections count];
 }
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
@@ -124,39 +137,38 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     cell.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
-    cell.textLabel.text = @"Download Images";
     cell.textLabel.textColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
     cell.textLabel.textAlignment = NSTextAlignmentLeft;
     
     UISwitch *switchCell = [[UISwitch alloc] init];
     switchCell.onTintColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
-    switchCell.accessibilityIdentifier = @"seve_images";
     [switchCell addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
     cell.accessoryView = switchCell;
     
-    switch (indexPath.row) {
-        case 0:
-            cell.textLabel.text = @"Fake Karma";
-            switchCell.accessibilityIdentifier = @"spoofed_karma";
-            break;
-        case 1:
-            cell.textLabel.text = @"Download Images";
-            switchCell.accessibilityIdentifier = @"save_posts";
-            break;
-        case 2:
-            cell.textLabel.text = @"Screenshot Protection";
+    if(indexPath.section == 0){
+        NSDictionary *row = _generalSection[indexPath.row];
+        NSString *tag = row[@"tag"];
+        NSNumber *isDisabled = row[@"disabled"];
+        NSLog(@"JDELogs isDisabled %@", isDisabled);
+        cell.textLabel.text = row[@"name"];
+        cell.tag = [tag intValue];
+        if([isDisabled boolValue]){
             cell.contentView.alpha = 0.4;
-            switchCell.accessibilityIdentifier = @"disable_screenshot";
-            break;
+            cell.userInteractionEnabled = NO;
+        }
 
     }
-
-    
     return cell;
 }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    NSInteger rows = 0;
+    switch (section) {
+        case 0:
+            rows = [_generalSection count];
+            break;
+    }
+    return rows;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
