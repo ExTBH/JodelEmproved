@@ -1,8 +1,8 @@
 Package: xyz.extbh.jodelemproved
 Name: JodelEmproved
-Version: 0.0.2
+Version: 0.0.3
 Architecture: iphoneos-arm
-Description: Jodel+
+Description: Just Jodel+
 Maintainer: ExT
 Author: ExT (emproved@extbh.xyz)
 Section: Tweaks

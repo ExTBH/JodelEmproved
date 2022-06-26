@@ -66,8 +66,16 @@
 }
 
 -(void)switchValueChanged:(UISwitch*)sender{
+    #define PATH "Library/Application Support/JodelEmproved.bundle"
 
-    NSLog(@"JDELogs");
+    NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
+
+    NSString *configPath = [mainBundle pathForResource:@"config" ofType:@"json"];
+
+    NSData *configData = [NSData dataWithContentsOfFile:configPath];
+
+    NSString *config = [[NSString alloc] initWithData:configData encoding:NSUTF8StringEncoding];
+    NSLog(@"JDELogs\n%@", config);
     
     switch (sender.tag) {
         case 0:
@@ -137,6 +145,7 @@
             break;
         case 2:
             cell.textLabel.text = @"Screenshot Protection";
+            cell.contentView.alpha = 0.4;
             switchCell.accessibilityIdentifier = @"disable_screenshot";
             break;
 
