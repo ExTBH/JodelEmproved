@@ -18,4 +18,19 @@
 
     return btn;
 }
+
+-(UIButton*)saveButton{
+    //init
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
+    btn.translatesAutoresizingMaskIntoConstraints = NO;
+    [btn setTitle:@"Save" forState:UIControlStateNormal];
+    //colors
+    [btn setTintColor:[UIColor whiteColor]];
+    //sizes
+
+    btn.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+
+
+    return btn;
+}
 @end

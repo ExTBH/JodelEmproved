@@ -3,7 +3,7 @@
 #import "JDEViewController.h"
 
 @interface JDLMainFeedNavigationController : UINavigationController
-//@property (strong, nonatomic) UIViewController *test;
+
 -(BOOL)addSettingsButton;
 -(void)presentJDEViewController:(id)sender;
 @end
@@ -11,7 +11,6 @@
 
 JDEViewController *JDEvc;
 
-//%property (strong, nonatomic) UIViewController *test;
 
 -(void)viewDidLoad{
     %orig;
@@ -38,7 +37,7 @@ JDEViewController *JDEvc;
         [view addSubview:btn];
         //Constraints
         [btn.topAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.topAnchor constant:10].active = YES;
-        [btn.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:15].active = YES;
+        [btn.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
         [btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
 
         
@@ -80,7 +79,52 @@ JDEViewController *JDEvc;
 %end
 
 
+@interface PictureFeedViewController : UIViewController
+@end
+%hook PictureFeedViewController
+
+- (void)viewDidLoad{
+    %orig;
+    @try {
+        UIView *view = [self viewIfLoaded];
+        UIButton *btn = [[[JDEButtons alloc] init] saveButton];
+        [btn addTarget:self action:@selector(saveImage:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:btn];
+        //Constraints
+        [btn.trailingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.trailingAnchor constant:-77].active = YES;
+        [btn.bottomAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.bottomAnchor constant:-45].active = YES;
+        //[btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
+    }
+    @catch(NSException *exception){
+    }
+}
+
+%new
+- (bool)saveImage:(id)sender{
+    @try{
+        UIView *view = [self view];
+        view = [[view subviews] firstObject];
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0f);
+        [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+        UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        UIImageWriteToSavedPhotosAlbum(capturedImage, nil, nil, nil);
+        return YES;
+    }
+    @catch(NSException *exception){
+        return NO;
+    }
+}
+
+- (void)refresh:(id)unknown{
+    NSLog(@"JDELogs unknown ; %@", unknown);
+    %orig;
+}
+
+%end
+
 %ctor {
     %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),
-    PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"));
+    PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
+    PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"));
 }

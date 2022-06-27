@@ -5,7 +5,7 @@
                 "name": "Download images",
                 "description": null,
                 "accessory_view": "switch",
-                "default": false,
+                "default": true,
                 "disabled": true,
                 "tag": "save_images"
                 
@@ -29,7 +29,7 @@
                 
             },
             {
-                "name": "Copy & Pase",
+                "name": "Copy & Paste",
                 "description": null,
                 "accessory_view": "switch",
                 "default": true,
