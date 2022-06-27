@@ -16,7 +16,9 @@
 
     NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
     NSString *configPath = [mainBundle pathForResource:@"config" ofType:@"json"];
-
+    if (configPath == nil){
+        return;
+    }
     _config = [self dictFromFile:configPath];
     _sections = [_config objectForKey:@"sections"];
     _generalSection = [_sections objectForKey:@"General"];
@@ -87,26 +89,39 @@
 
 -(void)switchValueChanged:(UISwitch*)sender{
 
+    #define CASE(str)  if ([__s__ isEqualToString:(str)]) 
+    #define SWITCH(s)  for (NSString *__s__ = (s); ; )
+    #define DEFAULT  
 
-
-    
-    switch (sender.tag) {
-        case 0:
+    SWITCH (sender.accessibilityLabel) {
+        CASE (@"save_images") {
             break;
-        case 1:
+        }
+        CASE (@"upload_images") {
             break;
-        case 2:
+        }
+        CASE (@"spoof_loc") {
             break;
-        case 3:
+        }
+        CASE (@"copy_paste") {
             break;
-        case 4:
+        }
+        CASE (@"confirm_vote") {
             break;
-        case 5:
+        }
+        CASE (@"confirm_reply") {
             break;
-        case 6:
+        }
+        CASE (@"anti_screenshot") {
             break;
+        }
+        CASE (@"anti_track") {
+            break;
+        }
+        DEFAULT {
+            break;
+        }
     }
-    
 }
 
 -(BOOL)addSettingsButtonForView:(UIView*)view{
@@ -151,10 +166,14 @@
         NSNumber *isDisabled = row[@"disabled"];
         NSLog(@"JDELogs isDisabled %@", isDisabled);
         cell.textLabel.text = row[@"name"];
+        switchCell.accessibilityLabel = row[@"tag"];
         cell.tag = [tag intValue];
         if([isDisabled boolValue]){
             cell.contentView.alpha = 0.4;
             cell.userInteractionEnabled = NO;
+        }
+        if([[row objectForKey:@"default"] boolValue]){
+            [switchCell setOn:YES animated:NO];
         }
 
     }

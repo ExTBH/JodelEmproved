@@ -4,3 +4,4 @@ debug:
 
 TODO:
     -Make a bundle at Library/Application Support/
+    -write prefs with NSUserDefaults

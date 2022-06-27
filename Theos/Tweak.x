@@ -51,6 +51,12 @@ JDEViewController *JDEvc;
 
 %new
 -(void)presentJDEViewController:(id)sender{
+    NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
+    NSString *configPath = [mainBundle pathForResource:@"config" ofType:@"json"];
+    // present UIAlert later
+    if (configPath == nil){
+        return;
+    }
     [self presentViewController:JDEvc animated:YES completion:nil];
 }
 %end

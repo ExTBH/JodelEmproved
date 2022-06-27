@@ -5,18 +5,18 @@
                 "name": "Download images",
                 "description": null,
                 "accessory_view": "switch",
-                "default": true,
+                "default": false,
                 "disabled": true,
-                "tag": "0"
+                "tag": "save_images"
                 
             },
             {
                 "name": "Upload from gallery",
                 "description": null,
                 "accessory_view": "switch",
-                "default": true,
+                "default": false,
                 "disabled": true,
-                "tag": "1"
+                "tag": "upload_images"
                 
             },
             {
@@ -25,43 +25,52 @@
                 "accessory_view": "switch",
                 "default": false,
                 "disabled": true,
-                "tag": "2"
+                "tag": "spoof_loc"
+                
+            },
+            {
+                "name": "Copy & Pase",
+                "description": null,
+                "accessory_view": "switch",
+                "default": true,
+                "disabled": true,
+                "tag": "copy_paste"
                 
             },
             {
                 "name": "Confirm votes",
                 "description": null,
                 "accessory_view": "switch",
-                "default": true,
+                "default": false,
                 "disabled": true,
-                "tag": "3"
+                "tag": "confirm_vote"
                 
             },
             {
                 "name": "Confirm replies",
                 "description": null,
                 "accessory_view": "switch",
-                "default": true,
+                "default": false,
                 "disabled": true,
-                "tag": "4"
+                "tag": "confirm_reply"
                 
             },
             {
                 "name": "Screenshot protetion",
                 "description": null,
                 "accessory_view": "switch",
-                "default": true,
+                "default": false,
                 "disabled": true,
-                "tag": "5"
+                "tag": "anti_screenshot"
                 
             },
             {
                 "name": "Tracking protetion",
                 "description": null,
                 "accessory_view": "switch",
-                "default": true,
+                "default": false,
                 "disabled": true,
-                "tag": "6"
+                "tag": "anti_track"
                 
             }
         ]
