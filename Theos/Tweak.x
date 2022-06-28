@@ -1,12 +1,6 @@
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import "JDEViewController.h"
+#import "Tweak.h"
 
-@interface JDLMainFeedNavigationController : UINavigationController
 
--(BOOL)addSettingsButton;
--(void)presentJDEViewController:(id)sender;
-@end
 %hook JDLMainFeedNavigationController
 
 JDEViewController *JDEvc;
@@ -15,9 +9,9 @@ JDEViewController *JDEvc;
 -(void)viewDidLoad{
     %orig;
     UIViewController *JDLmainFeedViewController = [[self childViewControllers] firstObject];
-    JDEvc= [[JDEViewController alloc] init];
+    JDEvc = [[JDEViewController alloc] init];
 
-    bool didAddSettingsButton = [self addSettingsButton];
+    bool didAddSettingsButton = [self JDEaddSettingsButton];
     if(!didAddSettingsButton){
         NSLog(@"JDELogs ifstat");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Restart the APP!" message:@"Failed to load the Settings Button" preferredStyle:UIAlertControllerStyleAlert];
@@ -29,7 +23,7 @@ JDEViewController *JDEvc;
 }
 
 %new
--(BOOL)addSettingsButton{
+-(BOOL)JDEaddSettingsButton{
     @try {
         UIView *view = [self viewIfLoaded];
         UIButton *btn = [[[JDEButtons alloc] init] defaultButton];
@@ -79,8 +73,8 @@ JDEViewController *JDEvc;
 %end
 
 
-@interface PictureFeedViewController : UIViewController
-@end
+
+//Enable Saving Images
 %hook PictureFeedViewController
 
 - (void)viewDidLoad{
@@ -88,19 +82,19 @@ JDEViewController *JDEvc;
     @try {
         UIView *view = [self viewIfLoaded];
         UIButton *btn = [[[JDEButtons alloc] init] saveButton];
-        [btn addTarget:self action:@selector(saveImage:) forControlEvents:UIControlEventTouchUpInside];
+        [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
         [btn.trailingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.trailingAnchor constant:-77].active = YES;
         [btn.bottomAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.bottomAnchor constant:-45].active = YES;
-        //[btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
+
     }
     @catch(NSException *exception){
     }
 }
 
 %new
-- (bool)saveImage:(id)sender{
+- (bool)JDEsaveImage:(id)sender{
     @try{
         UIView *view = [self view];
         view = [[view subviews] firstObject];
@@ -116,13 +110,43 @@ JDEViewController *JDEvc;
     }
 }
 
-- (void)refresh:(id)unknown{
-    NSLog(@"JDELogs unknown ; %@", unknown);
-    %orig;
-}
 
 %end
 
+
+
+%hook JDLImageCaptureViewController
+- (void)viewDidLoad{
+    %orig;
+    UIView *view = [self viewIfLoaded];
+    UIButton *btn = [[[JDEButtons alloc] init] saveButton];
+    [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
+    [view addSubview:btn];
+    //Constraints
+    [btn.centerYAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerYAnchor].active = YES;
+    [btn.centerXAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerXAnchor].active = YES;
+}
+%new
+-(void)JDEuploadImage:(id)sender{
+    NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
+    NSString *imagePATH = [mainBundle pathForResource:@"test" ofType:@"png"];
+    JDLAVCamCaptureManager *manager = [self captureManager];
+
+    UIImage *fakeimg = [UIImage imageNamed:imagePATH];
+    [self captureManagerStillImageCaptured:manager image:fakeimg];
+}
+
+- (void)captureManagerStillImageCaptured:(id)callerSelf image:(id)aImage{
+    %orig;
+    NSLog(@"JDELogs captureManagerStillImageCaptured %@", aImage);
+}
+%end
+
+%hook JDLAVCamCaptureManager
+- (bool)capturePhoto{
+    return %orig;
+}
+%end
 %ctor {
     %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),
     PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),

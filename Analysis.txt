@@ -1,9 +1,6 @@
 debug:
     -AppVersion: [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
     -MinIOSversion: [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MinimumOSVersion"]
-
 TODO:
     -Make a bundle at ~/Library/Application Support/
     -write prefs with NSUserDefaults
-
-    -Jodel.PictureFeedViewController 
