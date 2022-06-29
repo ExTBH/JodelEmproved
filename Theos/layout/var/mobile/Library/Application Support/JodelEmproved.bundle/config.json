@@ -12,9 +12,9 @@
             },
             {
                 "name": "Upload from gallery",
-                "description": null,
+                "description": "IOS 14+ for now",
                 "accessory_view": "switch",
-                "default": false,
+                "default": true,
                 "disabled": true,
                 "tag": "upload_images"
                 
@@ -59,7 +59,7 @@
                 "name": "Screenshot protetion",
                 "description": null,
                 "accessory_view": "switch",
-                "default": false,
+                "default": true,
                 "disabled": true,
                 "tag": "anti_screenshot"
                 

@@ -13,7 +13,6 @@ JDEViewController *JDEvc;
 
     bool didAddSettingsButton = [self JDEaddSettingsButton];
     if(!didAddSettingsButton){
-        NSLog(@"JDELogs ifstat");
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Restart the APP!" message:@"Failed to load the Settings Button" preferredStyle:UIAlertControllerStyleAlert];
     
         UIAlertAction *dismissAlert = [UIAlertAction actionWithTitle:@"dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
@@ -81,7 +80,8 @@ JDEViewController *JDEvc;
     %orig;
     @try {
         UIView *view = [self viewIfLoaded];
-        UIButton *btn = [[[JDEButtons alloc] init] saveButton];
+        UIButton *btn = [[[JDEButtons alloc] init] boldButton];
+        [btn setTitle:@"Save" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
@@ -115,40 +115,70 @@ JDEViewController *JDEvc;
 
 
 
+
+@interface JDLImageCaptureViewController() <PHPickerViewControllerDelegate>
+@end
+
 %hook JDLImageCaptureViewController
 - (void)viewDidLoad{
     %orig;
     UIView *view = [self viewIfLoaded];
-    UIButton *btn = [[[JDEButtons alloc] init] saveButton];
+    UIButton *btn = [[[JDEButtons alloc] init] boldButton];
+    [btn setTitle:@"Upload" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:btn];
     //Constraints
     [btn.centerYAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerYAnchor].active = YES;
     [btn.centerXAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerXAnchor].active = YES;
 }
+
 %new
 -(void)JDEuploadImage:(id)sender{
-    NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
-    NSString *imagePATH = [mainBundle pathForResource:@"test" ofType:@"png"];
-    JDLAVCamCaptureManager *manager = [self captureManager];
+    PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
+    config.selectionLimit = 1;
+    config.filter = [PHPickerFilter imagesFilter];
+    PHPickerViewController *photoPicker = [[PHPickerViewController alloc] initWithConfiguration:config];
+    photoPicker.delegate = self;
 
-    UIImage *fakeimg = [UIImage imageNamed:imagePATH];
-    [self captureManagerStillImageCaptured:manager image:fakeimg];
+    [self presentViewController:photoPicker animated:YES completion:nil];
+
+}
+%new
+- (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results{
+    NSLog(@"JDELogs didFinishPicking called %@", results);
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    PHPickerResult *result = [results firstObject];
+
+    [result.itemProvider loadObjectOfClass:UIImage.self
+                            completionHandler:^(UIImage* image, NSError *error){
+        if(error){
+            NSLog(@"%@", error);
+        } else{
+            [self loadImage:image];
+        }
+    }];
 }
 
-- (void)captureManagerStillImageCaptured:(id)callerSelf image:(id)aImage{
-    %orig;
-    NSLog(@"JDELogs captureManagerStillImageCaptured %@", aImage);
+%new
+- (void)loadImage:(UIImage*)image{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self captureManagerStillImageCaptured:self image:image];
+    });
 }
 %end
 
-%hook JDLAVCamCaptureManager
-- (bool)capturePhoto{
-    return %orig;
+//Disable Screenshots
+%hook ScreenshotService
+- (void)madeScreenshot{
+
 }
+
 %end
+
 %ctor {
     %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),
     PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
-    PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"));
+    PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
+    ScreenshotService=objc_getClass("Jodel.ScreenshotService"));
 }

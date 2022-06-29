@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <PhotosUI/PhotosUI.h>
 #import "JDEViewController.h"
 
 
@@ -20,5 +21,6 @@
 
 @interface JDLImageCaptureViewController : UIViewController
 @property (nonatomic, strong, readwrite)JDLAVCamCaptureManager *captureManager; // returned by -(id)captureManager
-- (void)captureManagerStillImageCaptured:(id)callerSelf image:(id)aImage;
+- (void)captureManagerStillImageCaptured:(id)iDontReallyKnow image:(id)aImage;
+- (void)loadImage:(UIImage*)image;
 @end

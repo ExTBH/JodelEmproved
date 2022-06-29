@@ -3,5 +3,5 @@
 @interface JDEButtons : NSObject
 
 -(UIButton*)defaultButton;
--(UIButton*)saveButton;
+-(UIButton*)boldButton;
 @end

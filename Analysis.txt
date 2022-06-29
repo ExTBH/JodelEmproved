@@ -4,3 +4,5 @@ debug:
 TODO:
     -Make a bundle at ~/Library/Application Support/
     -write prefs with NSUserDefaults
+    - check if app has permissions to save to Album
+    -move settings button to navBar e.g NavigationItem.LeftBarButtonItem = [MyButton]
