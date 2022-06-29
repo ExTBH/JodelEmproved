@@ -21,6 +21,6 @@
 
 @interface JDLImageCaptureViewController : UIViewController
 @property (nonatomic, strong, readwrite)JDLAVCamCaptureManager *captureManager; // returned by -(id)captureManager
-- (void)captureManagerStillImageCaptured:(id)iDontReallyKnow image:(id)aImage;
-- (void)loadImage:(UIImage*)image;
+
+
 @end

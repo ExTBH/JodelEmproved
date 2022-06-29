@@ -117,6 +117,10 @@ JDEViewController *JDEvc;
 
 
 @interface JDLImageCaptureViewController() <PHPickerViewControllerDelegate>
+- (void)JDEuploadImage:(id)sender;
+- (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results;
+- (void)captureManagerStillImageCaptured:(id)iDontReallyKnow image:(id)aImage;
+- (void)loadImage:(UIImage*)image;
 @end
 
 %hook JDLImageCaptureViewController
@@ -134,6 +138,7 @@ JDEViewController *JDEvc;
 
 %new
 -(void)JDEuploadImage:(id)sender{
+    // IOS 14+ Only!!!!
     PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
     config.selectionLimit = 1;
     config.filter = [PHPickerFilter imagesFilter];
