@@ -2,8 +2,11 @@ Package: xyz.extbh.jodelemproved
 Name: JodelEmproved
 Version: 0.0.4
 Architecture: iphoneos-arm
-Description: Just Jodel+
+Tag: compatible::13.0-15.5
+Description: Allowing You To Fully Use Jodel!
+Depiction: https://extbh.dev/
+Homepage: https://extbh.dev
 Maintainer: ExT
-Author: ExT (emproved@extbh.xyz)
+Author: ExT <emproved@extbh.xyz>
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000)
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 13.0)
