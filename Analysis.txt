@@ -7,3 +7,4 @@ TODO:
     - check if app has permissions to save to Album
     -move settings button to navBar e.g NavigationItem.LeftBarButtonItem = [MyButton]
     - gesture for Jodel.MainFeedLocationTitleViewController
+    - look at NSLayoutConstraint constraintsWithVisualFormat

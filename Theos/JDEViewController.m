@@ -67,6 +67,8 @@
     [self.view addSubview:navBar];
     [self.view addSubview:_tableView];
 
+
+
     //Constraints
     [navBar.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
     [navBar.widthAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.widthAnchor].active = YES;
@@ -190,18 +192,26 @@
     return rows;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+
+    return 55;
+}
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+
+    UILabel *statusMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, 0)];
+    statusMessage.text = @"This is still under development.\rReport all bugs to @ExTBH";
+    statusMessage.textColor = UIColor.blackColor;
+    statusMessage.textAlignment = NSTextAlignmentCenter;
+    statusMessage.numberOfLines = 0;
+    statusMessage.backgroundColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:.9];
+    return statusMessage;
+}
+
+
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    UITableViewHeaderFooterView *footer = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"footer"];
-    
-    
-    footer.textLabel.text = @"Jodel EMPROVED By ExT (1.0.0 ALPHA)";
-    footer.textLabel.textColor = UIColor.lightGrayColor;
-    footer.textLabel.textAlignment = NSTextAlignmentLeft;
-    footer.textLabel.font = [UIFont systemFontOfSize:10];
-    
-    
+
     UILabel *label = [[UILabel alloc] init];
-    [label setText:@"\tJodel EMPROVED By @ExT_BH (1.0.0)"];
+    [label setText:@"\tJodel EMPROVED By @ExTBH (1.0.0)"];
     [label setFont:[UIFont systemFontOfSize:15]];
     [label setTextColor:[UIColor lightGrayColor]];
     
