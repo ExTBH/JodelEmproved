@@ -89,7 +89,6 @@ JDEViewController *JDEvc;
 %new
 - (void)JDEcopyText:(UILongPressGestureRecognizer *)gestureRecognizer{
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
         UIPasteboard.generalPasteboard.string = [[self contentLabel] text];
     }
 }
