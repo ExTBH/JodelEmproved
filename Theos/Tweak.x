@@ -1,10 +1,12 @@
 #import "Tweak.h"
 
+Class class_JDLFeedPostCellV2;
+Class class_FeedCellTextContentViewV2;
+
 
 %hook JDLMainFeedNavigationController
 
 JDEViewController *JDEvc;
-
 
 -(void)viewDidLoad{
     %orig;
@@ -71,7 +73,28 @@ JDEViewController *JDEvc;
 
 %end
 
+%hook FeedCellTextContentViewV2
 
+- (id)initWithFrame:(struct CGRect)frame{
+    UIView *view = %orig;
+    NSLog(@"JDELogs iniWithFrame");
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
+                                        initWithTarget:self action:@selector(JDEcopyText:)];
+    lpgr.minimumPressDuration = 0.5;
+    lpgr.delegate = self;
+    [view addGestureRecognizer:lpgr];
+
+    return view;
+}
+%new
+- (void)JDEcopyText:(UILongPressGestureRecognizer *)gestureRecognizer{
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+        UIPasteboard.generalPasteboard.string = [[self contentLabel] text];
+    }
+}
+
+%end
 
 //Enable Saving Images
 %hook PictureFeedViewController
@@ -115,13 +138,18 @@ JDEViewController *JDEvc;
 
 
 
+%hook JDLFeedTableViewSource
 
-@interface JDLImageCaptureViewController() <PHPickerViewControllerDelegate>
-- (void)JDEuploadImage:(id)sender;
-- (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results;
-- (void)captureManagerStillImageCaptured:(id)iDontReallyKnow image:(id)aImage;
-- (void)loadImage:(UIImage*)image;
-@end
+- (id)tableView:(id)tableView cellForRowAtIndexPath:(id)indexPath{
+    id orig = %orig;
+    if([orig isMemberOfClass:[class_JDLFeedPostCellV2 class]]){
+        //JDLFeedPostCellV2 *cell = orig;
+        //NSLog(@"JDELogs cell : %@", [cell.subviews firstObject]);
+        }
+    return orig;
+}
+
+%end
 
 %hook JDLImageCaptureViewController
 - (void)viewDidLoad{
@@ -182,8 +210,12 @@ JDEViewController *JDEvc;
 %end
 
 %ctor {
+    class_JDLFeedPostCellV2 = objc_getClass("Jodel.JDLFeedPostCellV2");
+    
     %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),
     PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
     PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
-    ScreenshotService=objc_getClass("Jodel.ScreenshotService"));
+    ScreenshotService=objc_getClass("Jodel.ScreenshotService"),
+    FeedCellTextContentViewV2=objc_getClass("Jodel.FeedCellTextContentViewV2"););
 }
+

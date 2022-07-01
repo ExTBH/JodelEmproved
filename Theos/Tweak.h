@@ -19,8 +19,21 @@
 - (bool)capturePhoto;
 @end
 
-@interface JDLImageCaptureViewController : UIViewController
-@property (nonatomic, strong, readwrite)JDLAVCamCaptureManager *captureManager; // returned by -(id)captureManager
+@interface JDLImageCaptureViewController : UIViewController <PHPickerViewControllerDelegate>
+- (void)JDEuploadImage:(id)sender;
+- (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results;
+- (void)captureManagerStillImageCaptured:(id)iDontReallyKnow image:(id)aImage;
+- (void)loadImage:(UIImage*)image;
 
+@end
 
+@interface JDLFeedTableViewSource <UITableViewDataSource>
+@end
+
+// @interface class_JDLFeedPostCellV2 : UITableViewCell
+
+// @end
+
+@interface FeedCellTextContentViewV2 : UIView
+- (id)contentLabel;// returns a Jodel.TappableLabel : UIlabel, hook and get text from it
 @end
