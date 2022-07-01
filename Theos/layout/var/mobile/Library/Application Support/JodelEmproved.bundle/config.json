@@ -56,7 +56,7 @@
                 
             },
             {
-                "name": "Screenshot protetion",
+                "name": "Screenshot protection",
                 "description": null,
                 "accessory_view": "switch",
                 "default": true,
@@ -65,7 +65,7 @@
                 
             },
             {
-                "name": "Tracking protetion",
+                "name": "Tracking protection",
                 "description": null,
                 "accessory_view": "switch",
                 "default": false,
