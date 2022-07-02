@@ -1,6 +1,6 @@
-Package: xyz.extbh.jodelemproved
+Package: dev.extbh.jodelemproved
 Name: JodelEmproved
-Version: 0.0.4
+Version: 0.0.5
 Architecture: iphoneos-arm
 Tag: compatible::13.0-15.5
 Description: Allowing You To Fully Use Jodel!

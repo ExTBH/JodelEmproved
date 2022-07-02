@@ -28,12 +28,20 @@
 @end
 
 @interface JDLFeedTableViewSource <UITableViewDataSource>
+- (id)tableView:(id)tableView cellForRowAtIndexPath:(id)indexPath;
 @end
 
-// @interface class_JDLFeedPostCellV2 : UITableViewCell
-
-// @end
+@interface JDLPostDetailsPostCellV2 : UITableViewCell
+- (id)contentLabel;
+- (void)setContentLabel:(id)contentLabel;
+@end
+@interface AppHaptic
++ (void)makeLightFeedback;
++ (void)makeHeavyFeedback;
+@end
 
 @interface FeedCellTextContentViewV2 : UIView
 - (id)contentLabel;// returns a Jodel.TappableLabel : UIlabel, hook and get text from it
+- (void)didTapAction:(id)sender;// shows action sheet for the post
 @end
+

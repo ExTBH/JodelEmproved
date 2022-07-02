@@ -1,7 +1,6 @@
 #import "Tweak.h"
 
-Class class_JDLFeedPostCellV2;
-Class class_FeedCellTextContentViewV2;
+
 
 
 %hook JDLMainFeedNavigationController
@@ -73,26 +72,45 @@ JDEViewController *JDEvc;
 
 %end
 
+//Enable Copy In Main Feed
 %hook FeedCellTextContentViewV2
 
 - (id)initWithFrame:(struct CGRect)frame{
     UIView *view = %orig;
-    NSLog(@"JDELogs iniWithFrame");
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
-                                        initWithTarget:self action:@selector(JDEcopyText:)];
+                                        initWithTarget:self action:@selector(JDEcopyFeedText:)];
     lpgr.minimumPressDuration = 0.5;
     lpgr.delegate = self;
     [view addGestureRecognizer:lpgr];
 
     return view;
 }
+
 %new
-- (void)JDEcopyText:(UILongPressGestureRecognizer *)gestureRecognizer{
+- (void)JDEcopyFeedText:(UILongPressGestureRecognizer *)gestureRecognizer{
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         UIPasteboard.generalPasteboard.string = [[self contentLabel] text];
-    }
+        [objc_getClass("Jodel.AppHaptic") makeHeavyFeedback];
+    }   
 }
-
+%end
+//Enable Copy In Sub Posts
+%hook JDLPostDetailsPostCellV2
+- (void)setContentLabel:(id)contentLabel{
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
+                                        initWithTarget:self action:@selector(JDEcopyReplyText:)];
+    lpgr.minimumPressDuration = 0.5;
+    lpgr.delegate = self;
+    [self addGestureRecognizer:lpgr];
+    %orig;
+}
+%new
+- (void)JDEcopyReplyText:(UILongPressGestureRecognizer *)gestureRecognizer{
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        UIPasteboard.generalPasteboard.string = [[self contentLabel] text];
+        [objc_getClass("Jodel.AppHaptic") makeHeavyFeedback];
+    }   
+}
 %end
 
 //Enable Saving Images
@@ -137,18 +155,7 @@ JDEViewController *JDEvc;
 
 
 
-%hook JDLFeedTableViewSource
 
-- (id)tableView:(id)tableView cellForRowAtIndexPath:(id)indexPath{
-    id orig = %orig;
-    if([orig isMemberOfClass:[class_JDLFeedPostCellV2 class]]){
-        //JDLFeedPostCellV2 *cell = orig;
-        //NSLog(@"JDELogs cell : %@", [cell.subviews firstObject]);
-        }
-    return orig;
-}
-
-%end
 
 %hook JDLImageCaptureViewController
 - (void)viewDidLoad{
@@ -209,12 +216,11 @@ JDEViewController *JDEvc;
 %end
 
 %ctor {
-    class_JDLFeedPostCellV2 = objc_getClass("Jodel.JDLFeedPostCellV2");
-    
     %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),
     PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
     PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
     ScreenshotService=objc_getClass("Jodel.ScreenshotService"),
-    FeedCellTextContentViewV2=objc_getClass("Jodel.FeedCellTextContentViewV2"););
+    FeedCellTextContentViewV2=objc_getClass("Jodel.FeedCellTextContentViewV2"),
+    JDLPostDetailsPostCellV2=objc_getClass("Jodel.JDLPostDetailsPostCellV2"));
 }
 

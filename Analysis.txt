@@ -8,5 +8,3 @@ TODO:
     -move settings button to navBar e.g NavigationItem.LeftBarButtonItem = [MyButton]
     - gesture for Jodel.MainFeedLocationTitleViewController
     - look at NSLayoutConstraint constraintsWithVisualFormat
-    - Jodel.PostDetailsPostCellV2
-    - DO the copy as Action sheets
