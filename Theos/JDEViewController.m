@@ -198,7 +198,7 @@
 }
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
 
-    UILabel *statusMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, 0)];
+    UILabel *statusMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 0)];
     statusMessage.text = @"This is still under development.\rReport all bugs to @ExTBH";
     statusMessage.textColor = UIColor.blackColor;
     statusMessage.textAlignment = NSTextAlignmentCenter;
@@ -207,15 +207,23 @@
     return statusMessage;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+
+    return 55;
+}
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 0)];
     UILabel *label = [[UILabel alloc] init];
-    [label setText:@"\tJodel EMPROVED By @ExTBH (1.0.0)"];
-    [label setFont:[UIFont systemFontOfSize:15]];
-    [label setTextColor:[UIColor lightGrayColor]];
+    [view addSubview:label];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    label.text = @VERSION;
+    label.font = [UIFont systemFontOfSize:12];
+    label.textColor = UIColor.lightGrayColor;
+
+    [label.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
     
-    return label;
+    return view;
 }
 
 @end
