@@ -136,11 +136,9 @@
         [btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
 
         
-        NSLog(@"JDELogs try YES\n%s ", __PRETTY_FUNCTION__);
         return YES;
     }
     @catch(NSException *exception){
-        NSLog(@"JDELogs catch YES\n%s ", __PRETTY_FUNCTION__);
         return NO;
     }
 }
