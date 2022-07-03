@@ -2,7 +2,7 @@
 
 
 
-
+//Add JDEvc & Button
 %hook JDLMainFeedNavigationController
 
 JDEViewController *JDEvc;
@@ -54,7 +54,6 @@ JDEViewController *JDEvc;
 }
 %end
 
-
 //Enable Paste In New Posts
 %hook PlaceholderTextView
 
@@ -94,6 +93,7 @@ JDEViewController *JDEvc;
     }   
 }
 %end
+
 //Enable Copy In Sub Posts
 %hook JDLPostDetailsPostCellV2
 - (void)setContentLabel:(id)contentLabel{
@@ -153,10 +153,7 @@ JDEViewController *JDEvc;
 
 %end
 
-
-
-
-
+//Enable Uploading From Gallery
 %hook JDLImageCaptureViewController
 - (void)viewDidLoad{
     %orig;
@@ -214,6 +211,23 @@ JDEViewController *JDEvc;
 }
 
 %end
+
+//Spoof Location
+%hook JDLSWGJSONRequestSerializer
+
+- (id)lastStoredUserLocation{
+    
+    // if(isSpoofedOn == YES){
+    //     return spoofedLoc;
+    // }
+    return %orig;
+}
+
+%end
+
+
+
+
 
 %ctor {
     %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),

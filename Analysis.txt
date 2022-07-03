@@ -8,3 +8,6 @@ TODO:
     -move settings button to navBar e.g NavigationItem.LeftBarButtonItem = [MyButton]
     - gesture for Jodel.MainFeedLocationTitleViewController
     - look at NSLayoutConstraint constraintsWithVisualFormat
+    - make image select resizeable
+    - Jodel.JDLUserService // NSDate bannedUntil
+    - SWGDefaultConfiguration //debug property
