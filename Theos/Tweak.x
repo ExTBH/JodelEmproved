@@ -4,13 +4,16 @@
 
 //Add JDEvc & Button
 %hook JDLMainFeedNavigationController
-
-JDEViewController *JDEvc;
+%property (strong, nonatomic) NSUserDefaults *JDEsettings;
+%property (strong, nonatomic) JDEViewController *JDEvc;
 
 -(void)viewDidLoad{
     %orig;
+    JDLMainFeedNavigationController *usuableSelf = self;
     UIViewController *JDLmainFeedViewController = [[self childViewControllers] firstObject];
-    JDEvc = [[JDEViewController alloc] init];
+
+    usuableSelf.JDEvc = [[JDEViewController alloc] init];
+    usuableSelf.JDEsettings = [[NSUserDefaults alloc] initWithSuiteName:@"dev.extbh.jodelemproved"];
 
     bool didAddSettingsButton = [self JDEaddSettingsButton];
     if(!didAddSettingsButton){
@@ -50,7 +53,8 @@ JDEViewController *JDEvc;
     if (configPath == nil){
         return;
     }
-    [self presentViewController:JDEvc animated:YES completion:nil];
+    JDLMainFeedNavigationController *usuableSelf = self;
+    [self presentViewController:usuableSelf.JDEvc animated:YES completion:nil];
 }
 %end
 

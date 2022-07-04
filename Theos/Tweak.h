@@ -5,7 +5,8 @@
 
 
 @interface JDLMainFeedNavigationController : UINavigationController
-
+@property (strong, nonatomic) NSUserDefaults *JDEsettings;
+@property (strong, nonatomic) JDEViewController *JDEvc;
 -(BOOL)JDEaddSettingsButton;
 -(void)presentJDEViewController:(id)sender;
 @end

@@ -3,8 +3,6 @@ INSTALL_TARGET_PROCESSES = Jodel
 
 before-package::
 	@cp control layout/DEBIAN/control
-# after-package::
-# 	@updaterepo
 
 include $(THEOS)/makefiles/common.mk
 
