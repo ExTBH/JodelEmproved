@@ -10,7 +10,7 @@
 -(void)viewDidLoad{
     %orig;
     JDLMainFeedNavigationController *usuableSelf = self;
-    UIViewController *JDLmainFeedViewController = [[self childViewControllers] firstObject];
+    UIViewController *JDLmainFeedVC = [[self childViewControllers] firstObject];
 
     usuableSelf.JDEvc = [[JDEViewController alloc] init];
     usuableSelf.JDEsettings = [[NSUserDefaults alloc] initWithSuiteName:@"dev.extbh.jodelemproved"];
@@ -21,7 +21,7 @@
     
         UIAlertAction *dismissAlert = [UIAlertAction actionWithTitle:@"dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
         [alert addAction:dismissAlert];
-        [JDLmainFeedViewController presentViewController:alert animated:YES completion:nil];
+        [JDLmainFeedVC presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -47,12 +47,6 @@
 
 %new
 -(void)presentJDEViewController:(id)sender{
-    NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
-    NSString *configPath = [mainBundle pathForResource:@"config" ofType:@"json"];
-    // present UIAlert later
-    if (configPath == nil){
-        return;
-    }
     JDLMainFeedNavigationController *usuableSelf = self;
     [self presentViewController:usuableSelf.JDEvc animated:YES completion:nil];
 }
@@ -210,10 +204,7 @@
 
 //Disable Screenshots
 %hook ScreenshotService
-- (void)madeScreenshot{
-
-}
-
+- (void)madeScreenshot{}
 %end
 
 //Spoof Location

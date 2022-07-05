@@ -4,27 +4,16 @@
 // Private declarations; this class only.
 @interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource, UINavigationBarDelegate>
 @property (strong,nonatomic) UITableView *tableView;
-@property (strong,nonatomic) NSDictionary *config;
-@property (strong,nonatomic) NSDictionary *sections;
-@property (strong,nonatomic) NSArray *generalSection;
+@property (strong, nonatomic) JDESettingsManager *settingsManager;
 @end
 
 @implementation JDEViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+    _settingsManager = [[JDESettingsManager alloc] init];
+    if (_settingsManager == nil) {NSLog(@"JDELogs Fatal error in [_settingsManager init] fix ASAP");}
 
-    NSBundle *mainBundle = [NSBundle bundleWithPath:@PATH];
-    NSString *configPath = [mainBundle pathForResource:@"config" ofType:@"json"];
-    if (configPath == nil){
-        return;
-    }
-    _config = [self dictFromFile:configPath];
-    _sections = [_config objectForKey:@"sections"];
-    _generalSection = [_sections objectForKey:@"General"];
-
-
-    
     
     //Objects
     UINavigationBar *navBar = [[UINavigationBar alloc] init];
@@ -85,47 +74,6 @@
     return [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
 }
 
--(void)removeSettingsVC:(id)sender{
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
--(void)switchValueChanged:(UISwitch*)sender{
-
-    #define CASE(str)  if ([__s__ isEqualToString:(str)]) 
-    #define SWITCH(s)  for (NSString *__s__ = (s); ; )
-    #define DEFAULT  
-
-    SWITCH (sender.accessibilityLabel) {
-        CASE (@"save_images") {
-            break;
-        }
-        CASE (@"upload_images") {
-            break;
-        }
-        CASE (@"spoof_loc") {
-            break;
-        }
-        CASE (@"copy_paste") {
-            break;
-        }
-        CASE (@"confirm_vote") {
-            break;
-        }
-        CASE (@"confirm_reply") {
-            break;
-        }
-        CASE (@"anti_screenshot") {
-            break;
-        }
-        CASE (@"anti_track") {
-            break;
-        }
-        DEFAULT {
-            break;
-        }
-    }
-}
-
 -(BOOL)addSettingsButtonForView:(UIView*)view{
     @try {
         UIButton *btn = [[[JDEButtons alloc] init] defaultButton];
@@ -143,9 +91,16 @@
     }
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return [_sections count];
+-(void)removeSettingsVC:(id)sender{
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
+
+-(void)switchValueChanged:(UISwitch*)sender{ if (![_settingsManager featureStateChangedTo:sender.on forTag:sender.tag]) {[sender setOn:!sender.on animated:YES];}}
+
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 1; }
+
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section { return [_settingsManager numberOfFeatures]; }
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"settingsCell"];
@@ -159,36 +114,18 @@
     switchCell.onTintColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
     [switchCell addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
     cell.accessoryView = switchCell;
-    
-    if(indexPath.section == 0){
-        NSDictionary *row = _generalSection[indexPath.row];
-        NSString *tag = row[@"tag"];
-        NSNumber *isDisabled = row[@"disabled"];
-        NSLog(@"JDELogs isDisabled %@", isDisabled);
-        cell.textLabel.text = row[@"name"];
-        switchCell.accessibilityLabel = row[@"tag"];
-        cell.tag = [tag intValue];
-        if([isDisabled boolValue]){
-            cell.contentView.alpha = 0.4;
-            cell.userInteractionEnabled = NO;
-        }
-        if([[row objectForKey:@"default"] boolValue]){
-            [switchCell setOn:YES animated:NO];
-        }
+    // Disabling swithces
+    // cell.contentView.alpha = 0.4;
+    // cell.userInteractionEnabled = NO;
 
-    }
+    cell.textLabel.text = [_settingsManager featureNameForRow:indexPath.row];
+    switchCell.tag = [[_settingsManager featureTagForRow:indexPath.row] intValue];
+    [switchCell setOn:[_settingsManager featureStateForTag:indexPath.row] animated:NO];
+
+
     return cell;
 }
 
-- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSInteger rows = 0;
-    switch (section) {
-        case 0:
-            rows = [_generalSection count];
-            break;
-    }
-    return rows;
-}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
 
