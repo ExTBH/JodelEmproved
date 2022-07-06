@@ -11,7 +11,7 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    _settingsManager = [[JDESettingsManager alloc] init];
+    _settingsManager = [JDESettingsManager sharedInstance];
     if (_settingsManager == nil) {NSLog(@"JDELogs Fatal error in [_settingsManager init] fix ASAP");}
 
     
@@ -120,7 +120,7 @@
 
     cell.textLabel.text = [_settingsManager featureNameForRow:indexPath.row];
     switchCell.tag = [[_settingsManager featureTagForRow:indexPath.row] intValue];
-    [switchCell setOn:[_settingsManager featureStateForTag:indexPath.row] animated:NO];
+    [switchCell setOn:[_settingsManager featureStateForTag:switchCell.tag] animated:NO];
 
 
     return cell;

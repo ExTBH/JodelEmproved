@@ -14,16 +14,27 @@
     if (self != nil){
         _tweakSettings = [[NSUserDefaults alloc] initWithSuiteName:@suiteName];
         //_features = @[@"save_images", @"upload_images", @"spoof_gps", @"copy_paste", @"confirm_vote", @"confirm_reply", @"anti_ss", @"anti_telemtry"];
-        _features = @[@"Save images", @"Upload from gallery", @"Location spoofer", @"Copy & Paste", @"Confirm votes", @"confirm replies", @"Screenshot protection", @"Tracking protection"];
-        _featuresTags = @[@0, @1, @2, @3, @4, @5, @6, @7];
+        _features = @[@"Save images", @"Upload from gallery", @"Location spoofer*", @"Copy & Paste*", @"Confirm votes*", @"confirm replies*", @"Screenshot protection", @"Tracking protection*"];
+        _featuresTags = @[  @0,                  @1,                    @2,              @3,                 @4,               @5,                    @6,                     @7];
         if(_features.count != _featuresTags.count){NSLog(@"JDELogs %s Features Length does not match %lu %lu", __PRETTY_FUNCTION__, _features.count, _featuresTags.count); return nil;}
     }
     return self;
+}
++ (JDESettingsManager *)sharedInstance{
+
+    static JDESettingsManager *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+
+    dispatch_once(&onceToken, ^{ sharedInstance = [self new]; });
+
+    return sharedInstance;
+
 }
 - (NSArray<NSString*>*)features{ return _features; }
 - (NSUInteger)numberOfFeatures{ return _features.count; }
 - (NSString*)featureNameForRow:(NSUInteger)row{ return _features[row]; }
 - (NSNumber*)featureTagForRow:(NSUInteger)row{ return _featuresTags[row]; }
-- (BOOL)featureStateForTag:(NSUInteger)row {return [_tweakSettings boolForKey:[@(row) stringValue]]; }
+- (BOOL)featureStateForTag:(NSUInteger)tag {return [_tweakSettings boolForKey:[@(tag) stringValue]]; }
 - (BOOL)featureStateChangedTo:(BOOL)newState forTag:(NSUInteger)tag{ [_tweakSettings setBool:newState forKey:[@(tag) stringValue]]; return YES;}
+
 @end

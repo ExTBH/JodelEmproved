@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
 @interface JDESettingsManager : NSObject
++ (JDESettingsManager *)sharedInstance;
 - (NSArray<NSString*>*)features;
 - (NSUInteger)numberOfFeatures;
 - (NSString*)featureNameForRow:(NSUInteger)row;

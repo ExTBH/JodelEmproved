@@ -2,7 +2,7 @@
 #import "Classes/JDEButtons.h"
 #import "Classes/JDESettingsManager.h"
 #define PATH "var/mobile/Library/Application Support/JodelEmproved.bundle"
-#define VERSION "Jodel EMPROVED By @ExTBH (0.0.6)"
+#define VERSION "Jodel EMPROVED By @ExTBH (0.7)"
 
 @interface JDEViewController : UIViewController
 @property (strong, nonatomic) NSUserDefaults *tweakSettings;

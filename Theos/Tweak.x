@@ -4,7 +4,6 @@
 
 //Add JDEvc & Button
 %hook JDLMainFeedNavigationController
-%property (strong, nonatomic) NSUserDefaults *JDEsettings;
 %property (strong, nonatomic) JDEViewController *JDEvc;
 
 -(void)viewDidLoad{
@@ -13,7 +12,6 @@
     UIViewController *JDLmainFeedVC = [[self childViewControllers] firstObject];
 
     usuableSelf.JDEvc = [[JDEViewController alloc] init];
-    usuableSelf.JDEsettings = [[NSUserDefaults alloc] initWithSuiteName:@"dev.extbh.jodelemproved"];
 
     bool didAddSettingsButton = [self JDEaddSettingsButton];
     if(!didAddSettingsButton){
@@ -55,15 +53,15 @@
 //Enable Paste In New Posts
 %hook PlaceholderTextView
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
-    
-    if (action == @selector(paste:))
-        return YES;
-    if (action == @selector(copy:))
-        return YES;
-    if (action == @selector(selectAll:))
-        return YES;
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    if([[JDESettingsManager sharedInstance] featureStateForTag:3]){
+        if (action == @selector(paste:))
+            return YES;
+        if (action == @selector(copy:))
+            return YES;
+        if (action == @selector(selectAll:))
+            return YES;
+            }
     return %orig;
 }
 
@@ -73,14 +71,16 @@
 %hook FeedCellTextContentViewV2
 
 - (id)initWithFrame:(struct CGRect)frame{
-    UIView *view = %orig;
-    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
-                                        initWithTarget:self action:@selector(JDEcopyFeedText:)];
-    lpgr.minimumPressDuration = 0.5;
-    lpgr.delegate = self;
-    [view addGestureRecognizer:lpgr];
-
-    return view;
+    if([[JDESettingsManager sharedInstance] featureStateForTag:3]){
+        UIView *view = %orig;
+        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
+                                            initWithTarget:self action:@selector(JDEcopyFeedText:)];
+        lpgr.minimumPressDuration = 0.5;
+        lpgr.delegate = self;
+        [view addGestureRecognizer:lpgr];
+        return view;
+        }
+    return %orig;
 }
 
 %new
@@ -95,13 +95,16 @@
 //Enable Copy In Sub Posts
 %hook JDLPostDetailsPostCellV2
 - (void)setContentLabel:(id)contentLabel{
-    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
-                                        initWithTarget:self action:@selector(JDEcopyReplyText:)];
-    lpgr.minimumPressDuration = 0.5;
-    lpgr.delegate = self;
-    [self addGestureRecognizer:lpgr];
+    if([[JDESettingsManager sharedInstance] featureStateForTag:3]){
+        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
+                                            initWithTarget:self action:@selector(JDEcopyReplyText:)];
+        lpgr.minimumPressDuration = 0.5;
+        lpgr.delegate = self;
+        [self addGestureRecognizer:lpgr];
+    }
     %orig;
 }
+
 %new
 - (void)JDEcopyReplyText:(UILongPressGestureRecognizer *)gestureRecognizer{
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
@@ -116,18 +119,20 @@
 
 - (void)viewDidLoad{
     %orig;
-    @try {
-        UIView *view = [self viewIfLoaded];
-        UIButton *btn = [[[JDEButtons alloc] init] boldButton];
-        [btn setTitle:@"Save" forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:btn];
-        //Constraints
-        [btn.trailingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.trailingAnchor constant:-77].active = YES;
-        [btn.bottomAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.bottomAnchor constant:-45].active = YES;
+    if([[JDESettingsManager sharedInstance] featureStateForTag:0]){
+        @try {
+            UIView *view = [self viewIfLoaded];
+            UIButton *btn = [[[JDEButtons alloc] init] boldButton];
+            [btn setTitle:@"Save" forState:UIControlStateNormal];
+            [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
+            [view addSubview:btn];
+            //Constraints
+            [btn.trailingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.trailingAnchor constant:-77].active = YES;
+            [btn.bottomAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.bottomAnchor constant:-45].active = YES;
 
-    }
-    @catch(NSException *exception){
+        }
+        @catch(NSException *exception){
+        }
     }
 }
 
@@ -155,14 +160,16 @@
 %hook JDLImageCaptureViewController
 - (void)viewDidLoad{
     %orig;
-    UIView *view = [self viewIfLoaded];
-    UIButton *btn = [[[JDEButtons alloc] init] boldButton];
-    [btn setTitle:@"Upload" forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:btn];
-    //Constraints
-    [btn.centerYAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerYAnchor].active = YES;
-    [btn.centerXAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerXAnchor].active = YES;
+    if([[JDESettingsManager sharedInstance] featureStateForTag:1]){
+        UIView *view = [self viewIfLoaded];
+        UIButton *btn = [[[JDEButtons alloc] init] boldButton];
+        [btn setTitle:@"Upload" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:btn];
+        //Constraints
+        [btn.centerYAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerYAnchor].active = YES;
+        [btn.centerXAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerXAnchor].active = YES;
+    }
 }
 
 %new
@@ -204,17 +211,17 @@
 
 //Disable Screenshots
 %hook ScreenshotService
-- (void)madeScreenshot{}
+- (void)madeScreenshot{
+    if([[JDESettingsManager sharedInstance] featureStateForTag:6]){ return; }
+    return %orig;
+}
 %end
 
 //Spoof Location
 %hook JDLSWGJSONRequestSerializer
 
 - (id)lastStoredUserLocation{
-    
-    // if(isSpoofedOn == YES){
-    //     return spoofedLoc;
-    // }
+    if([[JDESettingsManager sharedInstance] featureStateForTag:2]){ return @"33.10100;-5.03702";}
     return %orig;
 }
 
