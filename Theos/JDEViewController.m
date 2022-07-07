@@ -47,7 +47,6 @@
     //Styles
     self.view.backgroundColor = [UIColor blackColor];
     _tableView.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.sectionFooterHeight = UITableViewAutomaticDimension;
     navItem.leftBarButtonItem.tintColor = UIColor.blackColor;
     navBar.standardAppearance.backgroundColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
@@ -107,22 +106,39 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     cell.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
-    cell.textLabel.textColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
-    cell.textLabel.textAlignment = NSTextAlignmentLeft;
-    
+
+    //Side Toggle
     UISwitch *switchCell = [[UISwitch alloc] init];
     switchCell.onTintColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
     [switchCell addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
     cell.accessoryView = switchCell;
-    // Disabling swithces
-    // cell.contentView.alpha = 0.4;
-    // cell.userInteractionEnabled = NO;
 
-    cell.textLabel.text = [_settingsManager featureNameForRow:indexPath.row];
     switchCell.tag = [[_settingsManager featureTagForRow:indexPath.row] intValue];
     [switchCell setOn:[_settingsManager featureStateForTag:switchCell.tag] animated:NO];
 
+    //Main Text
+    UILabel *featureName = [[UILabel alloc] init];
+    featureName.translatesAutoresizingMaskIntoConstraints = NO;
+    [cell.contentView addSubview:featureName];
+    featureName.text = [_settingsManager featureNameForRow:indexPath.row];
+    featureName.textColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
+    [featureName.leadingAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
 
+    //Sub Text
+    UILabel *featureDesc = [[UILabel alloc] init];
+    featureDesc.translatesAutoresizingMaskIntoConstraints = NO;
+    [cell.contentView addSubview:featureDesc];
+    featureDesc.text = [_settingsManager featureDescriptionForRow:indexPath.row];
+    //Style and rePosition
+    if(featureDesc.text == nil){[featureName.centerYAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.centerYAnchor].active = YES;}
+    else{
+        [featureName.topAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.topAnchor constant:5].active = YES;
+        featureDesc.textColor = UIColor.lightGrayColor;
+        featureDesc.font = [UIFont systemFontOfSize:13];
+        [featureDesc.topAnchor constraintEqualToAnchor:featureName.safeAreaLayoutGuide.bottomAnchor constant:5].active = YES;
+        [featureDesc.leadingAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
+    }
+    if([[_settingsManager featureDisabledForRow:indexPath.row] isEqual:@YES]) { cell.contentView.alpha = 0.4; cell.userInteractionEnabled = NO; }
     return cell;
 }
 
@@ -148,7 +164,7 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 0)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 5, tableView.frame.size.width, 0)];
     UILabel *label = [[UILabel alloc] init];
     [view addSubview:label];
     label.translatesAutoresizingMaskIntoConstraints = NO;

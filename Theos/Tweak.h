@@ -13,6 +13,7 @@
 
 
 @interface PictureFeedViewController : UIViewController
+@property (weak, nonatomic, readwrite) UIButton *addReactionButton;
 @end
 
 @interface JDLAVCamCaptureManager : NSObject

@@ -31,7 +31,7 @@
         [btn addTarget:self action:@selector(presentJDEViewController:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
-        [btn.topAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.topAnchor constant:10].active = YES;
+        [btn.topAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.topAnchor constant:7].active = YES;
         [btn.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
         [btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
 
@@ -118,21 +118,19 @@
 %hook PictureFeedViewController
 
 - (void)viewDidLoad{
+    PictureFeedViewController *usuableSelf = self;
     %orig;
     if([[JDESettingsManager sharedInstance] featureStateForTag:0]){
-        @try {
-            UIView *view = [self viewIfLoaded];
-            UIButton *btn = [[[JDEButtons alloc] init] boldButton];
-            [btn setTitle:@"Save" forState:UIControlStateNormal];
-            [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
-            [view addSubview:btn];
-            //Constraints
-            [btn.trailingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.trailingAnchor constant:-77].active = YES;
-            [btn.bottomAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.bottomAnchor constant:-45].active = YES;
 
-        }
-        @catch(NSException *exception){
-        }
+        UIView *view = [self viewIfLoaded];
+        UIButton *btn = [[[JDEButtons alloc] init] boldButton];
+        [btn setTitle:@"Save" forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:btn];
+        //Constraints
+        [btn.trailingAnchor constraintEqualToAnchor:usuableSelf.addReactionButton.safeAreaLayoutGuide.leadingAnchor constant:-15].active = YES;
+        [btn.bottomAnchor constraintEqualToAnchor:usuableSelf.addReactionButton.safeAreaLayoutGuide.bottomAnchor constant:-5].active = YES;
+
     }
 }
 
@@ -162,13 +160,19 @@
     %orig;
     if([[JDESettingsManager sharedInstance] featureStateForTag:1]){
         UIView *view = [self viewIfLoaded];
+        UIButton *realGalleryBtn = nil;
+        for(id temp in view.subviews){
+            if([temp isMemberOfClass:objc_getClass("Jodel.ButtonWithBanner")]){ realGalleryBtn = temp; }
+        }
         UIButton *btn = [[[JDEButtons alloc] init] boldButton];
         [btn setTitle:@"Upload" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
-        [btn.centerYAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerYAnchor].active = YES;
-        [btn.centerXAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerXAnchor].active = YES;
+        //[btn.centerYAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerYAnchor].active = YES;
+        //[btn.centerXAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerXAnchor].active = YES;
+        [btn.trailingAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.leadingAnchor constant:-15].active = YES;
+        [btn.bottomAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.bottomAnchor].active = YES;
     }
 }
 
@@ -221,7 +225,7 @@
 %hook JDLSWGJSONRequestSerializer
 
 - (id)lastStoredUserLocation{
-    if([[JDESettingsManager sharedInstance] featureStateForTag:2]){ return @"33.10100;-5.03702";}
+    if([[JDESettingsManager sharedInstance] featureStateForTag:2]){ return @"33.34058;44.40088";}
     return %orig;
 }
 
