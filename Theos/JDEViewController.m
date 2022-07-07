@@ -2,7 +2,7 @@
 
 
 // Private declarations; this class only.
-@interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource, UINavigationBarDelegate>
+@interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource>
 @property (strong,nonatomic) UITableView *tableView;
 @property (strong, nonatomic) JDESettingsManager *settingsManager;
 @end
@@ -66,12 +66,6 @@
     [_tableView.heightAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.heightAnchor].active = YES;
 }
 
-- (NSDictionary*)dictFromFile:(NSString*)filePath{
-
-    NSData *data = [NSData dataWithContentsOfFile:filePath];
-
-    return [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-}
 
 -(BOOL)addSettingsButtonForView:(UIView*)view{
     @try {
@@ -96,6 +90,11 @@
 
 -(void)switchValueChanged:(UISwitch*)sender{ if (![_settingsManager featureStateChangedTo:sender.on forTag:sender.tag]) {[sender setOn:!sender.on animated:YES];}}
 
+- (void)didTapLocationButton:(UIButton*)sender{
+
+
+
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 1; }
 
@@ -138,6 +137,18 @@
         [featureDesc.topAnchor constraintEqualToAnchor:featureName.safeAreaLayoutGuide.bottomAnchor constant:5].active = YES;
         [featureDesc.leadingAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
     }
+
+    if(indexPath.row == 2){
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
+        [btn addTarget:self action:@selector(didTapLocationButton:) forControlEvents:UIControlEventTouchUpInside];
+        [btn setTitle:@"Set Location" forState:UIControlStateNormal];
+        [cell.contentView addSubview:btn];
+        btn.translatesAutoresizingMaskIntoConstraints = NO;
+        [btn.centerYAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.centerYAnchor].active = YES;
+        [btn.trailingAnchor constraintEqualToAnchor:cell.contentView.safeAreaLayoutGuide.trailingAnchor constant:-20].active = YES;
+    }
+
+    //Disable Buttons
     if([[_settingsManager featureDisabledForRow:indexPath.row] isEqual:@YES]) { cell.contentView.alpha = 0.4; cell.userInteractionEnabled = NO; }
     return cell;
 }

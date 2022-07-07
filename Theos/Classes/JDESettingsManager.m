@@ -13,9 +13,9 @@
     self = [super init];
     if (self != nil){
         _tweakSettings = [[NSUserDefaults alloc] initWithSuiteName:@suiteName];
-        _features = @[@[@"Save images", @"nil", @NO], @[@"Upload from gallery", @"nil", @NO], @[@"Location spoofer", @"nil", @YES],
+        _features = @[@[@"Save images", @"nil", @NO], @[@"Upload from gallery", @"nil", @NO], @[@"Location spoofer", @"nil", @NO],
                         @[@"Copy & Paste", @"Require restart to fully change.", @NO], @[@"Confirm votes", @"nil", @YES],
-                        @[@"Confirm replies", @"nil", @YES], @[@"Screenshot protection", @"nil", @NO], @[@"Tracking protection", @"Stop analytics collection.", @YES],];
+                        @[@"Confirm replies", @"nil", @YES], @[@"Screenshot protection", @"Disable screenshot notification.", @NO], @[@"Tracking protection", @"Stop analytics collection.", @YES],];
     }
     return self;
 }

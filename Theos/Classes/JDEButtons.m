@@ -23,7 +23,6 @@
     //init
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
     btn.translatesAutoresizingMaskIntoConstraints = NO;
-    //[btn setTitle:@"Save" forState:UIControlStateNormal];
     //colors
     [btn setTintColor:[UIColor whiteColor]];
     //sizes
