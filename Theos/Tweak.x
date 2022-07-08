@@ -225,7 +225,7 @@
 %hook JDLSWGJSONRequestSerializer
 
 - (id)lastStoredUserLocation{
-    if([[JDESettingsManager sharedInstance] featureStateForTag:2]){ return @"33.34058;44.40088";}
+    if([[JDESettingsManager sharedInstance] featureStateForTag:2]){ return [[JDESettingsManager sharedInstance] spoofedLocation];}
     return %orig;
 }
 

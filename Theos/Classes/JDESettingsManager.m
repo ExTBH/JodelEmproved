@@ -37,6 +37,11 @@
     }
 - (NSNumber*)featureDisabledForRow:(NSUInteger)row{ return [_features objectAtIndex:row][2];}
 - (NSNumber*)featureTagForRow:(NSUInteger)row{ return @(row); }
+- (void)updateSpoofedLocationWith:(CLLocation*)newLocation { [_tweakSettings setObject:[NSString stringWithFormat:@"%f;%f", newLocation.coordinate.latitude, newLocation.coordinate.longitude] forKey:@"spoofed_location"]; }
+- (NSString*)spoofedLocation { 
+    if([_tweakSettings stringForKey:@"spoofed_location"]){
+        return [_tweakSettings stringForKey:@"spoofed_location"];}
+    return @"32.61603;44.02488"; }
 - (BOOL)featureStateForTag:(NSUInteger)tag {return [_tweakSettings boolForKey:[@(tag) stringValue]]; }
 - (BOOL)featureStateChangedTo:(BOOL)newState forTag:(NSUInteger)tag{ [_tweakSettings setBool:newState forKey:[@(tag) stringValue]]; return YES;}
 

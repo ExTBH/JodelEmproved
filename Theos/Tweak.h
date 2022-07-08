@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <PhotosUI/PhotosUI.h>
 #import "JDEViewController.h"
+#import "Headers/AppHaptic.h"
 
 
 @interface JDLMainFeedNavigationController : UINavigationController
@@ -37,10 +38,7 @@
 - (id)contentLabel;
 - (void)setContentLabel:(id)contentLabel;
 @end
-@interface AppHaptic
-+ (void)makeLightFeedback;
-+ (void)makeHeavyFeedback;
-@end
+
 
 @interface FeedCellTextContentViewV2 : UIView
 - (id)contentLabel;// returns a Jodel.TappableLabel : UIlabel, hook and get text from it

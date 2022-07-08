@@ -91,8 +91,8 @@
 -(void)switchValueChanged:(UISwitch*)sender{ if (![_settingsManager featureStateChangedTo:sender.on forTag:sender.tag]) {[sender setOn:!sender.on animated:YES];}}
 
 - (void)didTapLocationButton:(UIButton*)sender{
-
-
+    JDEMapView *mapView = [JDEMapView new];
+    [self presentViewController:mapView animated:YES completion:nil];
 
 }
 
