@@ -15,7 +15,7 @@
         _tweakSettings = [[NSUserDefaults alloc] initWithSuiteName:@suiteName];
         _features = @[@[@"Save images", @"nil", @NO], @[@"Upload from gallery", @"iOS 14+ for now.", @NO], @[@"Location spoofer", @"nil", @NO],
                         @[@"Copy & Paste", @"Require restart to fully change.", @NO], @[@"Confirm votes", @"nil", @YES],
-                        @[@"Confirm replies", @"nil", @YES], @[@"Screenshot protection", @"Disable screenshot notification.", @NO], @[@"Tracking protection", @"Stop analytics collection.", @YES],];
+                        @[@"Confirm replies", @"nil", @NO], @[@"Screenshot protection", @"Disable screenshot notification.", @NO], @[@"Tracking protection", @"Stop analytics collection.", @YES],];
     }
     return self;
 }

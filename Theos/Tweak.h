@@ -18,7 +18,6 @@
 @end
 
 @interface JDLAVCamCaptureManager : NSObject
-//@property (nonatomic, strong, readwrite)AVCapturePhotoOutput *photoOutput;
 - (bool)capturePhoto;
 @end
 
@@ -43,5 +42,9 @@
 @interface FeedCellTextContentViewV2 : UIView
 - (id)contentLabel;// returns a Jodel.TappableLabel : UIlabel, hook and get text from it
 - (void)didTapAction:(id)sender;// shows action sheet for the post
+@end
+
+@interface ChatboxViewController : UIViewController
+- (void)tappedSend;
 @end
 

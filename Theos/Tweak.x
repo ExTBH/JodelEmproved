@@ -228,11 +228,28 @@
     if([[JDESettingsManager sharedInstance] featureStateForTag:2]){ return [[JDESettingsManager sharedInstance] spoofedLocation];}
     return %orig;
 }
-
 %end
 
+//Confirm Replies
+%hook ChatboxViewController
+- (void)tappedSend{
+    if([[JDESettingsManager sharedInstance] featureStateForTag:5]){
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Confirm Reply"
+                                    message:nil
+                                    preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* reply = [UIAlertAction actionWithTitle:@"Reply" style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) { %orig; }];
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+        [alert addAction:reply];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+    else { %orig; }
+}
 
 
+%end
 
 
 %ctor {
@@ -241,6 +258,7 @@
     PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
     ScreenshotService=objc_getClass("Jodel.ScreenshotService"),
     FeedCellTextContentViewV2=objc_getClass("Jodel.FeedCellTextContentViewV2"),
-    JDLPostDetailsPostCellV2=objc_getClass("Jodel.JDLPostDetailsPostCellV2"));
+    JDLPostDetailsPostCellV2=objc_getClass("Jodel.JDLPostDetailsPostCellV2"),
+    ChatboxViewController=objc_getClass("Jodel.ChatboxViewController"));
 }
 
