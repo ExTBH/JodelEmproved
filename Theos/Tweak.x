@@ -1,6 +1,6 @@
 #import "Tweak.h"
 
-
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending) // https://stackoverflow.com/a/5337804
 
 //Add JDEvc & Button
 %hook JDLMainFeedNavigationController
@@ -179,18 +179,29 @@
 %new
 -(void)JDEuploadImage:(id)sender{
     // IOS 14+ Only!!!!
-    PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
-    config.selectionLimit = 1;
-    config.filter = [PHPickerFilter imagesFilter];
-    PHPickerViewController *photoPicker = [[PHPickerViewController alloc] initWithConfiguration:config];
-    photoPicker.delegate = self;
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"14")){
+        PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
+        config.selectionLimit = 1;
+        config.filter = [PHPickerFilter imagesFilter];
+        PHPickerViewController *photoPicker = [[PHPickerViewController alloc] initWithConfiguration:config];
+        photoPicker.delegate = self;
 
-    [self presentViewController:photoPicker animated:YES completion:nil];
-
+        [self presentViewController:photoPicker animated:YES completion:nil];
+    }
+    else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Sorry this is for iOS 14+ for now, next update it should support iOS 13"
+                                    message:nil
+                                    preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
+//iOS14+ Only
 %new
 - (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results{
-    NSLog(@"JDELogs didFinishPicking called %@", results);
+
     [picker dismissViewControllerAnimated:YES completion:nil];
     PHPickerResult *result = [results firstObject];
 
