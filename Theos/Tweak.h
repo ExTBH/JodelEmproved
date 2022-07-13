@@ -21,7 +21,9 @@
 - (bool)capturePhoto;
 @end
 
-@interface JDLImageCaptureViewController : UIViewController <PHPickerViewControllerDelegate>
+@interface JDLImageCaptureViewController : UIViewController <PHPickerViewControllerDelegate,
+                                                            UIImagePickerControllerDelegate,
+                                                            UINavigationControllerDelegate>
 - (void)JDEuploadImage:(id)sender;
 - (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results;
 - (void)captureManagerStillImageCaptured:(id)iDontReallyKnow image:(id)aImage;

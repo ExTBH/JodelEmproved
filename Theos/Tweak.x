@@ -189,16 +189,13 @@
         [self presentViewController:photoPicker animated:YES completion:nil];
     }
     else {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Sorry this is for iOS 14+ for now, next update it should support iOS 13"
-                                    message:nil
-                                    preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel
-                                    handler:^(UIAlertAction * action) {}];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
+        UIImagePickerController *picker = [UIImagePickerController new];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.delegate = self;
+        [self presentViewController:picker animated:YES completion:nil];
     }
 }
-//iOS14+ Only
+//iOS14 and up
 %new
 - (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results{
 
@@ -213,6 +210,17 @@
             [self loadImage:image];
         }
     }];
+}
+//iOS13 and below
+%new
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info{
+    [picker dismissViewControllerAnimated:YES completion:^(){
+        [self loadImage:info[UIImagePickerControllerOriginalImage]];
+    }];
+}
+%new
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 %new
