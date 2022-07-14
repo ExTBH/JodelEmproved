@@ -169,8 +169,6 @@
         [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
-        //[btn.centerYAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerYAnchor].active = YES;
-        //[btn.centerXAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.centerXAnchor].active = YES;
         [btn.trailingAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.leadingAnchor constant:-15].active = YES;
         [btn.bottomAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.bottomAnchor].active = YES;
     }
