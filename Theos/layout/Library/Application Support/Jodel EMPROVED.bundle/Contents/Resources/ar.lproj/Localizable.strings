@@ -1,0 +1,44 @@
+/*
+    Arabic Translation By @ExTBH
+*/
+
+//App
+"jodel_emproved" = "يودل إمبروفد";
+"emproved" = "إمبروفد";
+"version" = "1.0.4";
+
+//Developer
+"developed_by" = "طور بواسطة @ExTBH إصدار";
+
+//Shared
+"close" = "إغلاق";
+"save" = "إحفظ";
+"upload" = "إرفع";
+"map_change_location" = "غيّر الموقع إلى";
+"map_change_location_hint" = "إضغط مطولاً على الشاشة";
+
+//Settings view
+
+///NavBar
+"status_banner" = "الأداه مازالت تحت التطوير.\rالرجاء الإبلاغ عن جميع المشاكل إلى @ExTBH.";
+
+///Rows
+"save_images" = "حفظ الصور";
+"upload_images" = "رفع من الالبوم";
+"location_spoofer" = "تغيير الموقع";
+"location_spoofer_btn" = "إختر الموقع";
+"copy_paste" = "نسخ و لصق";
+"confirm_votes" = "تأكيد التصويت";
+"confirm_replies" = "تأكيد الردود";
+"screenshot_protection" = "حماية تصوير الشاشة";
+"tracking_protection" = "حماية التتبغ";
+
+//Settings description
+"copy_paste_desc" = "تتفعل بالضفط المطول, تحتاج إلى ريستارت للتغيير";
+"screenshot_protection_desc" = "أخذ صور للشاشة بدون تنبيه";
+"tracking_protection_desc" = "إيقاف التتبع للخصوصية";
+
+//Confirm Alerts
+"confirm_reply_title" = "تأكيد الرد";
+"confirm_reply_ok" = "أرسل";
+"confirm_reply_no" = "ألغي";

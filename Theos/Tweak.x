@@ -9,38 +9,26 @@
 -(void)viewDidLoad{
     %orig;
     JDLMainFeedNavigationController *usuableSelf = self;
-    UIViewController *JDLmainFeedVC = [[self childViewControllers] firstObject];
-
     usuableSelf.JDEvc = [[JDEViewController alloc] init];
 
-    bool didAddSettingsButton = [self JDEaddSettingsButton];
-    if(!didAddSettingsButton){
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Restart the APP!" message:@"Failed to load the Settings Button" preferredStyle:UIAlertControllerStyleAlert];
-    
-        UIAlertAction *dismissAlert = [UIAlertAction actionWithTitle:@"dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
-        [alert addAction:dismissAlert];
-        [JDLmainFeedVC presentViewController:alert animated:YES completion:nil];
-    }
+    [self JDEaddSettingsButton];
 }
 
 %new
--(BOOL)JDEaddSettingsButton{
+-(void)JDEaddSettingsButton{
     @try {
         UIView *view = [self viewIfLoaded];
         UIButton *btn = [[[JDEButtons alloc] init] defaultButton];
         [btn addTarget:self action:@selector(presentJDEViewController:) forControlEvents:UIControlEventTouchUpInside];
+        [btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"] forState:UIControlStateNormal];
         [view addSubview:btn];
         //Constraints
         [btn.topAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.topAnchor constant:7].active = YES;
         [btn.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
         [btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
 
-        
-        return YES;
     }
-    @catch(NSException *exception){
-        return NO;
-    }
+    @catch(NSException *exception){}
 }
 
 %new
@@ -124,7 +112,7 @@
 
         UIView *view = [self viewIfLoaded];
         UIButton *btn = [[[JDEButtons alloc] init] boldButton];
-        [btn setTitle:@"Save" forState:UIControlStateNormal];
+        [btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"save"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
@@ -165,7 +153,7 @@
             if([temp isMemberOfClass:objc_getClass("Jodel.ButtonWithBanner")]){ realGalleryBtn = temp; }
         }
         UIButton *btn = [[[JDEButtons alloc] init] boldButton];
-        [btn setTitle:@"Upload" forState:UIControlStateNormal];
+        [btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"upload"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
@@ -251,12 +239,12 @@
 %hook ChatboxViewController
 - (void)tappedSend{
     if([[JDESettingsManager sharedInstance] featureStateForTag:5]){
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Confirm Reply"
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_reply_title"] 
                                     message:nil
                                     preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* reply = [UIAlertAction actionWithTitle:@"Reply" style:UIAlertActionStyleDefault
+        UIAlertAction* reply = [UIAlertAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_reply_ok"] style:UIAlertActionStyleDefault
                                     handler:^(UIAlertAction * action) { %orig; }];
-        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_reply_no"] style:UIAlertActionStyleCancel
                                     handler:^(UIAlertAction * action) {}];
         [alert addAction:reply];
         [alert addAction:cancel];
