@@ -4,8 +4,6 @@
 
 @interface JDESettingsManager()
 @property (strong, nonatomic) NSUserDefaults *tweakSettings;
-@property (strong, nonatomic) NSArray<NSArray*> *features;
-@property (strong, nonatomic) NSArray<NSNumber*> *featuresTags;
 @property (strong, nonatomic) NSBundle *bundle;
 @end
 
@@ -14,9 +12,7 @@
     self = [super init];
     if (self != nil){
         _tweakSettings = [[NSUserDefaults alloc] initWithSuiteName:@suiteName];
-        _features = @[@[@"Save images", @"nil", @NO], @[@"Upload from gallery", @"nil", @NO], @[@"Location spoofer", @"nil", @NO],
-                        @[@"Copy & Paste", @"Require restart to fully change.", @NO], @[@"Confirm votes", @"nil", @YES],
-                        @[@"Confirm replies", @"nil", @NO], @[@"Screenshot protection", @"Disable screenshot notification.", @NO], @[@"Tracking protection", @"Stop analytics collection.", @YES],];
+
 
         _bundle = [NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"];
     }
@@ -77,14 +73,6 @@
     }
     return info;
 }
-- (NSUInteger)numberOfFeatures{ return _features.count; }
-- (NSString*)featureNameForRow:(NSUInteger)row{ return [_features objectAtIndex:row][0]; }
-- (NSString*)featureDescriptionForRow:(NSUInteger)row{ 
-    NSString *tmp = [_features objectAtIndex:row][1];
-    if([tmp isEqualToString:@"nil"]) {return nil;} return tmp; 
-    }
-- (NSNumber*)featureDisabledForRow:(NSUInteger)row{ return [_features objectAtIndex:row][2];}
-- (NSNumber*)featureTagForRow:(NSUInteger)row{ return @(row); }
 - (void)updateSpoofedLocationWith:(CLLocation*)newLocation { [_tweakSettings setObject:[NSString stringWithFormat:@"%f;%f", newLocation.coordinate.latitude, newLocation.coordinate.longitude] forKey:@"spoofed_location"]; }
 - (NSString*)spoofedLocation { 
     if([_tweakSettings stringForKey:@"spoofed_location"]){

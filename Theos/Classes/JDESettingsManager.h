@@ -6,11 +6,6 @@
 @interface JDESettingsManager : NSObject
 + (JDESettingsManager *)sharedInstance;
 - (NSDictionary*)cellInfoForPath:(NSUInteger)indexPath;
-- (NSUInteger)numberOfFeatures;
-- (NSString*)featureNameForRow:(NSUInteger)row;
-- (NSString*)featureDescriptionForRow:(NSUInteger)row;
-- (NSNumber*)featureDisabledForRow:(NSUInteger)row;
-- (NSNumber*)featureTagForRow:(NSUInteger)row;
 - (void)updateSpoofedLocationWith:(CLLocation*)newLocation;
 - (NSString*)spoofedLocation;
 - (BOOL)featureStateForTag:(NSUInteger)row;
