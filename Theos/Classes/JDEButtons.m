@@ -7,7 +7,6 @@
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
     btn.translatesAutoresizingMaskIntoConstraints = NO;
     btn.layer.masksToBounds = YES;
-    [btn setTitle:@"EMPROVED" forState:UIControlStateNormal];
     //colors
     btn.layer.borderColor = [UIColor colorWithRed:1 green:0.710 blue:0.298 alpha:1].CGColor;
     [btn setTintColor:[UIColor colorWithRed:1 green:0.710 blue:0.298 alpha:1]];

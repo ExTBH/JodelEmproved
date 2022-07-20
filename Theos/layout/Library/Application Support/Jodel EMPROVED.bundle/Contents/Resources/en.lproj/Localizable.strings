@@ -1,0 +1,44 @@
+/*
+    English Translation By @ExTBH
+*/
+
+//App
+"jodel_emproved" = "Jodel EMPROVED";
+"emproved" = "EMPROVED";
+"version" = "1.0.4";
+
+//Developer
+"developed_by" = "Developed By @ExTBH version";
+
+//Shared
+"close" = "Close";
+"save" = "Save";
+"upload" = "Upload";
+"map_change_location" = "Change location to";
+"map_change_location_hint" = "Long press on the map";
+
+//Settings view
+
+///NavBar
+"status_banner" = "This is still under development.\rReport all bugs to @ExTBH.";
+
+///rows
+"save_images" = "Save Images";
+"upload_images" = "Upload From Gallery";
+"location_spoofer" = "Location Spoofer";
+"location_spoofer_btn" = "Set Location";
+"copy_paste" = "Copy & Paste";
+"confirm_votes" = "Confirm votes";
+"confirm_replies" = "Confirm Replies";
+"screenshot_protection" = "Screenshot Protection";
+"tracking_protection" = "Tracking Protection";
+
+//Settings description
+"copy_paste_desc" = "Activates by long press, needs restart for changes";
+"screenshot_protection_desc" = "Takes screenshot without anyone knowing";
+"tracking_protection_desc" = "No more tracking";
+
+//Confirm Alerts
+"confirm_reply_title" = "Confirm Reply";
+"confirm_reply_ok" = "Reply";
+"confirm_reply_no" = "Cancel";

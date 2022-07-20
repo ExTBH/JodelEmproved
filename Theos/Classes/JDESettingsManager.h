@@ -5,6 +5,7 @@
 
 @interface JDESettingsManager : NSObject
 + (JDESettingsManager *)sharedInstance;
+- (NSDictionary*)cellInfoForPath:(NSUInteger)indexPath;
 - (NSUInteger)numberOfFeatures;
 - (NSString*)featureNameForRow:(NSUInteger)row;
 - (NSString*)featureDescriptionForRow:(NSUInteger)row;
@@ -14,5 +15,6 @@
 - (NSString*)spoofedLocation;
 - (BOOL)featureStateForTag:(NSUInteger)row;
 - (BOOL)featureStateChangedTo:(BOOL)newState forTag:(NSUInteger)tag;
+- (NSString*)localizedStringForKey:(NSString*)key;
 @end
 

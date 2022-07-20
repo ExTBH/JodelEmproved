@@ -21,9 +21,9 @@
     [navBar.standardAppearance configureWithDefaultBackground];
 
     UINavigationItem *navItem = [[UINavigationItem alloc] init];
-    [navItem setTitle:@"EMPROVED"];
+    [navItem setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"]];
 
-    UIBarButtonItem *closeButton =  [[UIBarButtonItem alloc] initWithTitle:@"Close"
+    UIBarButtonItem *closeButton =  [[UIBarButtonItem alloc] initWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"close"]
                                                             style:UIBarButtonItemStylePlain
                                                             target:self
                                                             action:@selector(removeSettingsVC:)];
@@ -98,58 +98,71 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 1; }
 
-- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section { return [_settingsManager numberOfFeatures]; }
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section { return 8; }
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"settingsCell"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
     cell.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
 
     //Side Toggle
-    UISwitch *switchCell = [[UISwitch alloc] init];
+    UISwitch *switchCell = [UISwitch new];
     switchCell.onTintColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
     [switchCell addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
     cell.accessoryView = switchCell;
 
-    switchCell.tag = [[_settingsManager featureTagForRow:indexPath.row] intValue];
-    [switchCell setOn:[_settingsManager featureStateForTag:switchCell.tag] animated:NO];
+    switchCell.tag = indexPath.row;
+    [switchCell setOn:[_settingsManager featureStateForTag:indexPath.row] animated:NO];
 
     //Main Text
-    UILabel *featureName = [[UILabel alloc] init];
+    UILabel *featureName = [UILabel new];
     featureName.translatesAutoresizingMaskIntoConstraints = NO;
     [cell.contentView addSubview:featureName];
-    featureName.text = [_settingsManager featureNameForRow:indexPath.row];
     featureName.textColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
     [featureName.leadingAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
 
-    //Sub Text
-    UILabel *featureDesc = [[UILabel alloc] init];
-    featureDesc.translatesAutoresizingMaskIntoConstraints = NO;
-    [cell.contentView addSubview:featureDesc];
-    featureDesc.text = [_settingsManager featureDescriptionForRow:indexPath.row];
-    //Style and rePosition
-    if(featureDesc.text == nil){[featureName.centerYAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.centerYAnchor].active = YES;}
-    else{
-        [featureName.topAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.topAnchor constant:5].active = YES;
-        featureDesc.textColor = UIColor.lightGrayColor;
-        featureDesc.font = [UIFont systemFontOfSize:13];
-        [featureDesc.topAnchor constraintEqualToAnchor:featureName.safeAreaLayoutGuide.bottomAnchor constant:5].active = YES;
-        [featureDesc.leadingAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
+    NSDictionary *info = [_settingsManager cellInfoForPath:indexPath.row];
+    for(NSString *key in info){
+
+        if([key isEqualToString:@"title"]){
+            featureName.text = info[key];
+            continue;
+            }
+        if([key isEqualToString:@"desc"]){
+            UILabel *featureDesc = [UILabel new];
+            featureDesc.translatesAutoresizingMaskIntoConstraints = NO;
+            [cell.contentView addSubview:featureDesc];
+            featureDesc.text = info[key];
+            //Styling
+            [featureName.topAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.topAnchor constant:5].active = YES;
+            featureDesc.textColor = UIColor.lightGrayColor;
+            featureDesc.font = [UIFont systemFontOfSize:13];
+            [featureDesc.topAnchor constraintEqualToAnchor:featureName.safeAreaLayoutGuide.bottomAnchor constant:5].active = YES;
+            [featureDesc.leadingAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
+            continue;
+        }
+        if([key isEqualToString:@"disabled"]){
+            cell.contentView.alpha = 0.4;
+            cell.userInteractionEnabled = NO;
+            continue;
+        }
     }
+    if(!info[@"desc"]){
+        [featureName.centerYAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.centerYAnchor].active = YES;
+        NSLog(@"JDELogs ishere %@", info[@"title"]);
+    }
+
 
     if(indexPath.row == 2){
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
         [btn addTarget:self action:@selector(didTapLocationButton:) forControlEvents:UIControlEventTouchUpInside];
-        [btn setTitle:@"Set Location" forState:UIControlStateNormal];
+        [btn setTitle:[_settingsManager localizedStringForKey:@"location_spoofer_btn"] forState:UIControlStateNormal];
         [cell.contentView addSubview:btn];
         btn.translatesAutoresizingMaskIntoConstraints = NO;
         [btn.centerYAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.centerYAnchor].active = YES;
         [btn.trailingAnchor constraintEqualToAnchor:cell.contentView.safeAreaLayoutGuide.trailingAnchor constant:-20].active = YES;
     }
 
-    //Disable Buttons
-    if([[_settingsManager featureDisabledForRow:indexPath.row] isEqual:@YES]) { cell.contentView.alpha = 0.4; cell.userInteractionEnabled = NO; }
     return cell;
 }
 
@@ -161,7 +174,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
 
     UILabel *statusMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 0)];
-    statusMessage.text = @"This is still under development.\rReport all bugs to @ExTBH";
+    statusMessage.text = [[JDESettingsManager sharedInstance] localizedStringForKey:@"status_banner"];
     statusMessage.textColor = UIColor.blackColor;
     statusMessage.textAlignment = NSTextAlignmentCenter;
     statusMessage.numberOfLines = 0;
@@ -179,7 +192,8 @@
     UILabel *label = [[UILabel alloc] init];
     [view addSubview:label];
     label.translatesAutoresizingMaskIntoConstraints = NO;
-    label.text = @VERSION;
+    label.text = [NSString stringWithFormat:@"%@ %@",[[JDESettingsManager sharedInstance] localizedStringForKey:@"developed_by"],
+                                                        [[JDESettingsManager sharedInstance] localizedStringForKey:@"version"]];
     label.font = [UIFont systemFontOfSize:12];
     label.textColor = UIColor.lightGrayColor;
 

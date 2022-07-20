@@ -30,8 +30,11 @@
     navigatioBar.standardAppearance.backgroundColor = UIColor.blackColor;
     navigatioBar.standardAppearance.titleTextAttributes = @{NSForegroundColorAttributeName: UIColor.whiteColor};
     //NavigationBar Items
-    UINavigationItem *navigationBarItem = [[UINavigationItem alloc] initWithTitle:@"Location Spoofer"];
-    navigationBarItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Dismiss" style:UIBarButtonItemStylePlain target:self action:@selector(didTapDismissButton:)];
+    UINavigationItem *navigationBarItem = [[UINavigationItem alloc] initWithTitle:[[JDESettingsManager sharedInstance]
+                                            localizedStringForKey:@"location_spoofer"]];
+    navigationBarItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[[JDESettingsManager sharedInstance]
+                                            localizedStringForKey:@"close"] style:UIBarButtonItemStylePlain target:self
+                                            action:@selector(didTapDismissButton:)];
     
     navigatioBar.items = @[navigationBarItem];
     
@@ -62,7 +65,7 @@
     _btn.enabled = NO;
     _btn.translatesAutoresizingMaskIntoConstraints = NO;
     _btn.backgroundColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
-    [_btn setTitle:@"Set Location To" forState:UIControlStateNormal];
+    [_btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"map_change_location_hint"]  forState:UIControlStateNormal];
     _btn.titleLabel.font = [UIFont boldSystemFontOfSize:15];
     _btn.tintColor = UIColor.blackColor;
     _btn.layer.cornerRadius = 9;
@@ -94,7 +97,10 @@
     [objc_getClass("Jodel.AppHaptic") makeHeavyFeedback];
     [[CLGeocoder new] reverseGeocodeLocation:_location completionHandler:^(NSArray<CLPlacemark*> *placeMarks, NSError *error){
         if (placeMarks.count > 0) {
-            [self->_btn setTitle:[NSString stringWithFormat:@"Set Location To %@, %@",placeMarks[0].administrativeArea, placeMarks[0].country] forState:UIControlStateNormal];
+            [self->_btn setTitle:[NSString stringWithFormat:@"%@ %@, %@", [[JDESettingsManager sharedInstance]
+                                                                            localizedStringForKey:@"map_change_location"],
+                                                                            placeMarks[0].administrativeArea,
+                                                                            placeMarks[0].country] forState:UIControlStateNormal];
             }
     }
     ];
