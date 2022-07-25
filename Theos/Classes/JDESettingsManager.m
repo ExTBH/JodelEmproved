@@ -52,7 +52,6 @@
         case 4:
             info = @{
                 @"title": [self localizedStringForKey:@"confirm_votes"],
-                @"disabled": @1
             }; break;
         case 5:
             info = @{

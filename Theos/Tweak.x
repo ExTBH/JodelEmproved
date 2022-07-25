@@ -252,8 +252,55 @@
     }
     else { %orig; }
 }
+%end
 
+//Confirm Votes
+%hook FeedCellVoteView
 
+- (void)downvoteTap:(id)sender{
+    if([[JDESettingsManager sharedInstance] featureStateForTag:4]){
+        UIViewController *topVC = [self firstAvailableUIViewController:self];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_vote_title"] 
+                                    message:nil
+                                    preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* reply = [UIAlertAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_vote_ok"] style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) { %orig; }];
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_vote_no"] style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+        [alert addAction:reply];
+        [alert addAction:cancel];
+        [topVC presentViewController:alert animated:YES completion:nil];
+        }
+    else { %orig; }
+}
+- (void)upvoteTap:(id)sender{
+    if([[JDESettingsManager sharedInstance] featureStateForTag:4]){
+        UIViewController *topVC = [self firstAvailableUIViewController:self];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_vote_title"] 
+                                    message:nil
+                                    preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* reply = [UIAlertAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_vote_ok"] style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) { %orig; }];
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_vote_no"] style:UIAlertActionStyleCancel
+                                    handler:^(UIAlertAction * action) {}];
+        [alert addAction:reply];
+        [alert addAction:cancel];
+        [topVC presentViewController:alert animated:YES completion:nil];
+        }
+    else { %orig; }
+}
+
+%new
+- (UIViewController *) firstAvailableUIViewController:(UIView*)view {
+    UIResponder *responder = [view nextResponder];
+    while (responder != nil) {
+        if ([responder isKindOfClass:[UIViewController class]]) {
+            return (UIViewController *)responder;
+        }
+        responder = [responder nextResponder];
+    }
+    return nil;
+}
 %end
 
 
@@ -263,6 +310,7 @@
     PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
     ScreenshotService=objc_getClass("Jodel.ScreenshotService"),
     FeedCellTextContentViewV2=objc_getClass("Jodel.FeedCellTextContentViewV2"),
+    FeedCellVoteView=objc_getClass("Jodel.JDLFeedCellVoteView"),
     JDLPostDetailsPostCellV2=objc_getClass("Jodel.JDLPostDetailsPostCellV2"),
     ChatboxViewController=objc_getClass("Jodel.ChatboxViewController"));
 }

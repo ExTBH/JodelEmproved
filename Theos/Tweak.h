@@ -50,3 +50,8 @@
 - (void)tappedSend;
 @end
 
+@interface FeedCellVoteView : UIView
+- (void)downvoteTap:(id)sender;
+- (void)upvoteTap:(id)sender;
+- (UIViewController *) firstAvailableUIViewController:(UIView*)view; //Getting the VC to show an alert
+@end

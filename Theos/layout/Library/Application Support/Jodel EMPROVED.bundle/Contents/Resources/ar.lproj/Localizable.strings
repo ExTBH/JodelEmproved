@@ -5,7 +5,7 @@
 //App
 "jodel_emproved" = "يودل إمبروفد";
 "emproved" = "إمبروفد";
-"version" = "1.0.5";
+"version" = "1.0.6";
 
 //Developer
 "developed_by" = "طور بواسطة @ExTBH إصدار";
@@ -42,3 +42,6 @@
 "confirm_reply_title" = "تأكيد الرد";
 "confirm_reply_ok" = "أرسل";
 "confirm_reply_no" = "ألغي";
+"confirm_vote_title" = "تأكيد التصويت";
+"confirm_vote_ok" = "صوِت";
+"confirm_vote_no" = "ألغي";
