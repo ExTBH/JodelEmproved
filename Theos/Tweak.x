@@ -111,13 +111,12 @@
     if([[JDESettingsManager sharedInstance] featureStateForTag:0]){
 
         UIView *view = [self viewIfLoaded];
-        UIButton *btn = [[[JDEButtons alloc] init] boldButton];
-        [btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"save"] forState:UIControlStateNormal];
+        UIButton *btn = [[[JDEButtons alloc] init] buttonWithImageNamed:@"arrow.down.circle.fill"];
         [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
-        [btn.trailingAnchor constraintEqualToAnchor:usuableSelf.addReactionButton.safeAreaLayoutGuide.leadingAnchor constant:-15].active = YES;
-        [btn.bottomAnchor constraintEqualToAnchor:usuableSelf.addReactionButton.safeAreaLayoutGuide.bottomAnchor constant:-5].active = YES;
+        [btn.trailingAnchor constraintEqualToAnchor:usuableSelf.addReactionButton.safeAreaLayoutGuide.leadingAnchor constant:-20].active = YES;
+        [btn.bottomAnchor constraintEqualToAnchor:usuableSelf.addReactionButton.safeAreaLayoutGuide.bottomAnchor constant:-7].active = YES;
 
     }
 }
@@ -152,13 +151,13 @@
         for(id temp in view.subviews){
             if([temp isMemberOfClass:objc_getClass("Jodel.ButtonWithBanner")]){ realGalleryBtn = temp; }
         }
-        UIButton *btn = [[[JDEButtons alloc] init] boldButton];
-        [btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"upload"] forState:UIControlStateNormal];
+        UIButton *btn = [[[JDEButtons alloc] init] buttonWithImageNamed:@"arrow.up.circle.fill"];
+        //[btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"upload"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
-        [btn.trailingAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.leadingAnchor constant:-15].active = YES;
-        [btn.bottomAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.bottomAnchor].active = YES;
+        [btn.trailingAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.leadingAnchor constant:-20].active = YES;
+        [btn.bottomAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.bottomAnchor constant:-7].active = YES;
     }
 }
 

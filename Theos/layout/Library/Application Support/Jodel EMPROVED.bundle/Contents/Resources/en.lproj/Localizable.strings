@@ -12,8 +12,6 @@
 
 //Shared
 "close" = "Close";
-"save" = "Save";
-"upload" = "Upload";
 "map_change_location" = "Change location to";
 "map_change_location_hint" = "Long press on the map";
 

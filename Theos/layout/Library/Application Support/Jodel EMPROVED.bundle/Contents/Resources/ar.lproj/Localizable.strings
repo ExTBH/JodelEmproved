@@ -12,8 +12,6 @@
 
 //Shared
 "close" = "إغلاق";
-"save" = "إحفظ";
-"upload" = "إرفع";
 "map_change_location" = "غيّر الموقع إلى";
 "map_change_location_hint" = "إضغط مطولاً على الشاشة";
 
