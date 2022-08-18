@@ -8,7 +8,7 @@
 
 - [x] Confirm Replies
 
-- [ ] Confirm Votes
+- [x] Confirm Votes
 
 - [x] Screenshot Protection
 
@@ -20,7 +20,7 @@
 
 - [ ] Make an OnBoarding
 
-- [ ] Image Lookup Built-in
+- [ ] Image Lookup Built-in (Just too hard)
 
 - [ ] ReDesign the TableView //Add aboutme and stuff
 
