@@ -6,9 +6,7 @@
 
 - [x] Copy & Paste
 
-- [x] Confirm Replies
-
-- [x] Confirm Votes
+- [x] Confirm Replies, Votes
 
 - [x] Screenshot Protection
 
@@ -16,12 +14,8 @@
 
 - [ ] Custom Replies Color
 
-- [ ] Built-in Translator
-
-- [ ] Make an OnBoarding
-
 - [ ] Image Lookup Built-in (Just too hard)
 
-- [ ] ReDesign the TableView //Add aboutme and stuff
-
-
+- [ ] ReDesign the Settings //Add aboutme and stuff
+  - [ ] Match the theme in subviews
+  - [ ] Add New Section for Source Code/ About Me
