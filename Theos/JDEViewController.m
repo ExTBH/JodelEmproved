@@ -3,7 +3,7 @@
 
 // Private declarations; this class only.
 @interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource>
-@property (strong,nonatomic) UITableView *tableView;
+@property (strong,nonatomic) UITableView *JETableview;
 @property (strong, nonatomic) JDESettingsManager *settingsManager;
 @end
 
@@ -12,58 +12,38 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     _settingsManager = [JDESettingsManager sharedInstance];
-    if (_settingsManager == nil) {NSLog(@"JDELogs Fatal error in [_settingsManager init] fix ASAP");}
+    [self configureLookAndBar];
+    [self configureTableview];
 
+}
+
+// MARK: - General Methods
+- (void)configureLookAndBar{
+    // Who likea transparent background?
+    self.view.backgroundColor = UIColor.systemBackgroundColor;
+    //Bar buttons you know
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemClose target:self
+                                                                        action:@selector(removeSettingsVC:)];
+    self.navigationItem.leftBarButtonItem  = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"location"] 
+                                                                        style:UIBarButtonItemStyleDone target:self 
+                                                                        action:@selector(didTapLocationButton:)];
+}
+- (void)configureTableview{
+    self.JETableview = [[UITableView alloc] initWithFrame:CGRectNull style:UITableViewStyleGrouped];
+    self.JETableview.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.JETableview];
+    self.JETableview.delegate = self;
+    self.JETableview.dataSource = self;
     
-    //Objects
-    UINavigationBar *navBar = [[UINavigationBar alloc] init];
-    navBar.standardAppearance = [[UINavigationBarAppearance alloc] init];
-    [navBar.standardAppearance configureWithDefaultBackground];
-
-    UINavigationItem *navItem = [[UINavigationItem alloc] init];
-    [navItem setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"]];
-
-    UIBarButtonItem *closeButton =  [[UIBarButtonItem alloc] initWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"close"]
-                                                            style:UIBarButtonItemStylePlain
-                                                            target:self
-                                                            action:@selector(removeSettingsVC:)];
-
-
-    closeButton.tintColor = UIColor.redColor;
-    _tableView = [[UITableView alloc] init];
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-
-    //Set Views
-    _tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    navBar.translatesAutoresizingMaskIntoConstraints = NO;
-    navBar.translucent = NO;
-    navBar.items = @[navItem];
-    [navItem setLeftBarButtonItem:closeButton];
-
-
+    [NSLayoutConstraint activateConstraints:@[
+        [self.JETableview.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [self.JETableview.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
+        [self.JETableview.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
+        [self.JETableview.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor]
+    ]];
     
-
-    //Styles
-    self.view.backgroundColor = [UIColor blackColor];
-    _tableView.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
-    _tableView.sectionFooterHeight = UITableViewAutomaticDimension;
-    navItem.leftBarButtonItem.tintColor = UIColor.blackColor;
-    navBar.standardAppearance.backgroundColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
-
-    //SubViews
-    [self.view addSubview:navBar];
-    [self.view addSubview:_tableView];
-
-
-
-    //Constraints
-    [navBar.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
-    [navBar.widthAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.widthAnchor].active = YES;
-    
-    [_tableView.topAnchor constraintEqualToAnchor:navBar.safeAreaLayoutGuide.bottomAnchor].active = YES;
-    [_tableView.widthAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.widthAnchor].active = YES;
-    [_tableView.heightAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.heightAnchor].active = YES;
+    self.JETableview.sectionHeaderHeight = 33;
+    //self.JETableview.allowsSelection = NO;
 }
 
 
@@ -85,121 +65,176 @@
 }
 
 -(void)removeSettingsVC:(id)sender{
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)switchValueChanged:(UISwitch*)sender{ if (![_settingsManager featureStateChangedTo:sender.on forTag:sender.tag]) {[sender setOn:!sender.on animated:YES];}}
+-(void)switchValueChanged:(UISwitch*)sender{ [_settingsManager featureStateChangedTo:sender.isOn forTag:sender.tag]; }
 
 - (void)didTapLocationButton:(UIButton*)sender{
     JDEMapView *mapView = [JDEMapView new];
-    [self presentViewController:mapView animated:YES completion:nil];
-
+    mapView.title = @"Change Location";
+    [self.navigationController pushViewController:mapView animated:YES];
+}
+- (void)didTapInfo:(id)sender{
+    //TODO: - Implement Logic to show an Info view to explain
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 1; }
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 2; }
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UIView *headerView = [UIView new];
+    headerView.backgroundColor = UIColor.clearColor;
+    UILabel *label = [UILabel new];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    [headerView addSubview:label];
+    
+    switch (section) {
+        case 0:
+            label.text = @"General Configuration";
+            break;
+        case 1:
+            label.text = @"About";
+            break;
+            
+    }    label.textColor = UIColor.secondaryLabelColor;
+    
+    [NSLayoutConstraint activateConstraints:@[
+        [label.leadingAnchor constraintEqualToAnchor:headerView.safeAreaLayoutGuide.leadingAnchor constant:20],
+        [label.centerYAnchor constraintEqualToAnchor:headerView.safeAreaLayoutGuide.centerYAnchor]
+    ]];
+    
+    
+    return  headerView;
+}
 
-- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section { return 8; }
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if(section == 0){ return 8;}
+    return 3;
+}
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"settingsCell"];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.backgroundColor = [UIColor colorWithRed:.149 green:.149 blue:.165 alpha:1];
+    cell.backgroundColor = UIColor.clearColor;
+    NSMutableArray<NSLayoutConstraint *> *consts = [NSMutableArray new];
+    NSDictionary *infoDict = [_settingsManager cellInfoForPath:indexPath];
 
-    //Side Toggle
-    UISwitch *switchCell = [UISwitch new];
-    switchCell.onTintColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
-    [switchCell addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
-    cell.accessoryView = switchCell;
+    //Cell Icon
+    cell.imageView.image = infoDict[@"image"];
+    //Cell Label
+    cell.textLabel.text = infoDict[@"title"];
+    // hiding views for section 2
+    if(indexPath.section == 0){
+        //Info Button
+        UIButton *info = [UIButton systemButtonWithImage:[UIImage systemImageNamed:@"info.circle"] target:self action:@selector(didTapInfo:)];
+        info.translatesAutoresizingMaskIntoConstraints = NO;
+        //Info Button constraints
+        [consts addObject:[info.centerYAnchor constraintEqualToAnchor:cell.centerYAnchor]];
+        [consts addObject:[info.trailingAnchor constraintEqualToAnchor:cell.trailingAnchor constant:-20]];
 
-    switchCell.tag = indexPath.row;
-    [switchCell setOn:[_settingsManager featureStateForTag:indexPath.row] animated:NO];
+        //Switch Button
+        UISwitch *switchView = [UISwitch new];
+        switchView.translatesAutoresizingMaskIntoConstraints = NO;
+        [switchView addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [consts addObject:[switchView.centerYAnchor constraintEqualToAnchor:cell.centerYAnchor]];
+        [consts addObject:[switchView.trailingAnchor constraintEqualToAnchor:info.leadingAnchor constant:-10]];
+        switchView.tag = indexPath.row;
+        [switchView setOn:[_settingsManager featureStateForTag:indexPath.row] animated:NO];
 
-    //Main Text
-    UILabel *featureName = [UILabel new];
-    featureName.translatesAutoresizingMaskIntoConstraints = NO;
-    [cell.contentView addSubview:featureName];
-    featureName.textColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
-    [featureName.leadingAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
-
-    NSDictionary *info = [_settingsManager cellInfoForPath:indexPath.row];
-    for(NSString *key in info){
-
-        if([key isEqualToString:@"title"]){
-            featureName.text = info[key];
-            continue;
-            }
-        if([key isEqualToString:@"desc"]){
-            UILabel *featureDesc = [UILabel new];
-            featureDesc.translatesAutoresizingMaskIntoConstraints = NO;
-            [cell.contentView addSubview:featureDesc];
-            featureDesc.text = info[key];
-            //Styling
-            [featureName.topAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.topAnchor constant:5].active = YES;
-            featureDesc.textColor = UIColor.lightGrayColor;
-            featureDesc.font = [UIFont systemFontOfSize:13];
-            [featureDesc.topAnchor constraintEqualToAnchor:featureName.safeAreaLayoutGuide.bottomAnchor constant:5].active = YES;
-            [featureDesc.leadingAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
-            continue;
+        //Adding Content views
+        [cell.contentView addSubview:info];
+        [cell.contentView addSubview:switchView];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    } else{
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        if(indexPath.row != 2){
+            UIImage *tst = [UIImage resizeImageFromImage:infoDict[@"image"] withSize:CGSizeMake(25, 25)];
+            cell.imageView.image = tst;
         }
-        if([key isEqualToString:@"disabled"]){
+    }
+
+    [NSLayoutConstraint activateConstraints:consts];
+    //Disabling cells
+    if(infoDict[@"disabled"]){
             cell.contentView.alpha = 0.4;
             cell.userInteractionEnabled = NO;
-            continue;
         }
-    }
-    if(!info[@"desc"]){
-        [featureName.centerYAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.centerYAnchor].active = YES;
-        NSLog(@"JDELogs ishere %@", info[@"title"]);
-    }
-
-
-    if(indexPath.row == 2){
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
-        [btn addTarget:self action:@selector(didTapLocationButton:) forControlEvents:UIControlEventTouchUpInside];
-        [btn setTitle:[_settingsManager localizedStringForKey:@"location_spoofer_btn"] forState:UIControlStateNormal];
-        [cell.contentView addSubview:btn];
-        btn.translatesAutoresizingMaskIntoConstraints = NO;
-        [btn.centerYAnchor constraintEqualToAnchor:cell.safeAreaLayoutGuide.centerYAnchor].active = YES;
-        [btn.trailingAnchor constraintEqualToAnchor:cell.contentView.safeAreaLayoutGuide.trailingAnchor constant:-20].active = YES;
-    }
 
     return cell;
 }
-
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-
-    return 55;
-}
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-
-    UILabel *statusMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 0)];
-    statusMessage.text = [[JDESettingsManager sharedInstance] localizedStringForKey:@"status_banner"];
-    statusMessage.textColor = UIColor.blackColor;
-    statusMessage.textAlignment = NSTextAlignmentCenter;
-    statusMessage.numberOfLines = 0;
-    statusMessage.backgroundColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:.9];
-    return statusMessage;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-
-    return 55;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 5, tableView.frame.size.width, 0)];
-    UILabel *label = [[UILabel alloc] init];
-    [view addSubview:label];
-    label.translatesAutoresizingMaskIntoConstraints = NO;
-    label.text = [NSString stringWithFormat:@"%@ %@",[[JDESettingsManager sharedInstance] localizedStringForKey:@"developed_by"],
-                                                        [[JDESettingsManager sharedInstance] localizedStringForKey:@"version"]];
-    label.font = [UIFont systemFontOfSize:12];
-    label.textColor = UIColor.lightGrayColor;
-
-    [label.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    return view;
+    NSURL *url;
+    switch(indexPath.row){
+        case 0:
+            url = [NSURL URLWithString:@"https://github.com/ExTBH/JodelEmproved/"];
+            if([UIApplication.sharedApplication canOpenURL:url]){
+                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
+                    NSLog(@"%d", success);
+                }];}
+            break;
+        case 1:
+            url = [NSURL URLWithString:@"https://twitter.com/@ExTBH"];
+            if([UIApplication.sharedApplication canOpenURL:url]){
+                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
+                    NSLog(@"%d", success);
+                }];}
+            break;
+        case 2:
+            url = [NSURL URLWithString:@"mailto:emproved@extbh.xyz"];
+            if([UIApplication.sharedApplication canOpenURL:url]){
+                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
+                    NSLog(@"%d", success);
+                }];}
+            break;
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+
+
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point{
+    NSMutableArray *suggestedActions = [NSMutableArray new];
+
+    if(indexPath.section == 0){
+        //Getting the cell so we can access the switch for the Menu
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        //break if cell is disabled
+        if(!cell.userInteractionEnabled) {return nil;}
+        UISwitch *cellSwitch = cell.contentView.subviews[3];
+        
+        if (!cellSwitch.isOn) {
+            UIAction *enable = [UIAction actionWithTitle:@"Enable" image:[UIImage systemImageNamed:@"checkmark"] identifier:nil handler:^(UIAction *handler) {
+                [cellSwitch setOn:YES animated:YES];
+                [self switchValueChanged:cellSwitch];
+                }];
+            [suggestedActions addObject:enable];
+        } else {
+            UIAction *disable = [UIAction actionWithTitle:@"Disable" image:[UIImage systemImageNamed:@"xmark"] identifier:nil handler:^(UIAction *handler) {
+            [cellSwitch setOn:NO animated:YES];
+            [self switchValueChanged:cellSwitch];
+            }];
+            [suggestedActions addObject:disable];
+        }
+        
+
+        if(cellSwitch.tag == 2) {
+            UIAction *location = [UIAction actionWithTitle:@"Change Location" image:[UIImage systemImageNamed:@"location"] identifier:nil handler:^(UIAction *handler) {
+                [self didTapLocationButton:nil];
+            }];
+            [suggestedActions addObject:location];
+        }
+    } else{
+        UIAction *location = [UIAction actionWithTitle:@"Change Location" image:[UIImage systemImageNamed:@"location"] identifier:nil handler:^(UIAction *handler) {
+                [self didTapLocationButton:nil];
+            }];
+        [suggestedActions addObject:location];
+
+    }
+    UIMenu *menu = [UIMenu menuWithTitle:@"" children:suggestedActions];
+    UIContextMenuConfiguration *menuConfig = [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil actionProvider:^(NSArray *suggestedActions) { return menu;}
+    ];
+    
+    return  menuConfig;
 }
 
 @end

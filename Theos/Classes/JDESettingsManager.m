@@ -12,9 +12,10 @@
     self = [super init];
     if (self != nil){
         _tweakSettings = [[NSUserDefaults alloc] initWithSuiteName:@suiteName];
-
-
         _bundle = [NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"];
+        if ([NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"] == nil){
+            NSLog(@"JDELogs its a nil");
+        }
     }
     return self;
 }
@@ -28,47 +29,78 @@
     return sharedInstance;
 
 }
-- (NSDictionary*)cellInfoForPath:(NSUInteger)indexPath{
+- (NSDictionary*)cellInfoForPath:(NSIndexPath*)indexPath;{
     NSDictionary *info;
-    switch(indexPath){
+    switch(indexPath.section){
         case 0:
-            info = @{
-                @"title": [self localizedStringForKey:@"save_images"]
-            }; break;
-            
+            switch(indexPath.row){
+                case 0:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"save_images"],
+                        @"image": [UIImage systemImageNamed:@"square.and.arrow.down"]
+                    }; break;
+                    
+                case 1:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"upload_images"],
+                        @"image": [UIImage systemImageNamed:@"square.and.arrow.up"]
+                    }; break;
+                case 2:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"location_spoofer"],
+                        @"image": [UIImage systemImageNamed:@"location"]
+                    }; break;
+                case 3:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"copy_paste"],
+                        @"desc": [self localizedStringForKey:@"copy_paste_desc"],
+                        @"image": [UIImage systemImageNamed:@"doc.on.doc"]
+                    }; break;
+                case 4:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"confirm_votes"],
+                        @"image": [UIImage systemImageNamed:@"checkmark.square"]
+                    }; break;
+                case 5:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"confirm_replies"],
+                        @"image": [UIImage systemImageNamed:@"checkmark.square"]
+                        
+                    }; break;
+                case 6:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"screenshot_protection"],
+                        @"desc": [self localizedStringForKey:@"screenshot_protection_desc"],
+                        @"image": [UIImage systemImageNamed:@"bell.slash"]
+                    }; break;
+                case 7:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"tracking_protection"],
+                        @"desc": [self localizedStringForKey:@"tracking_protection_desc"],
+                        @"image": [UIImage systemImageNamed:@"person.crop.circle.badge.xmark"],
+                        @"disabled": @1
+                    }; break;
+            }
+            break;
         case 1:
-            info = @{
-                @"title": [self localizedStringForKey:@"upload_images"],
-            }; break;
-        case 2:
-            info = @{
-                @"title": [self localizedStringForKey:@"location_spoofer"],
-            }; break;
-        case 3:
-            info = @{
-                @"title": [self localizedStringForKey:@"copy_paste"],
-                @"desc": [self localizedStringForKey:@"copy_paste_desc"]
-            }; break;
-        case 4:
-            info = @{
-                @"title": [self localizedStringForKey:@"confirm_votes"],
-            }; break;
-        case 5:
-            info = @{
-                @"title": [self localizedStringForKey:@"confirm_replies"],
-                
-            }; break;
-        case 6:
-            info = @{
-                @"title": [self localizedStringForKey:@"screenshot_protection"],
-                @"desc": [self localizedStringForKey:@"screenshot_protection_desc"]
-            }; break;
-        case 7:
-            info = @{
-                @"title": [self localizedStringForKey:@"tracking_protection"],
-                @"desc": [self localizedStringForKey:@"tracking_protection_desc"],
-                @"disabled": @1
-            }; break;
+            switch(indexPath.row){
+                case 0:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"source_code"],
+                        @"image":  [[UIImage alloc] initWithContentsOfFile:[self pathForImageWithName:@"github"]]
+                    }; break;
+                    
+                case 1:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"twitter"],
+                        @"image": [[UIImage alloc] initWithContentsOfFile:[self pathForImageWithName:@"twitter"]] 
+                    }; break;
+                case 2:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"email"],
+                        @"image": [UIImage systemImageNamed:@"envelope"]
+                    }; break;
+            }
     }
     return info;
 }
@@ -78,7 +110,11 @@
         return [_tweakSettings stringForKey:@"spoofed_location"];}
     return @"32.61603;44.02488"; }
 - (BOOL)featureStateForTag:(NSUInteger)tag {return [_tweakSettings boolForKey:[@(tag) stringValue]]; }
-- (BOOL)featureStateChangedTo:(BOOL)newState forTag:(NSUInteger)tag{ [_tweakSettings setBool:newState forKey:[@(tag) stringValue]]; return YES;}
+- (void)featureStateChangedTo:(BOOL)newState forTag:(NSUInteger)tag{ [_tweakSettings setBool:newState forKey:[@(tag) stringValue]];
+    NSLog(@"JDELogs %d %lu", newState, tag);
+}
 - (NSString*)localizedStringForKey:(NSString*)key{ return [_bundle localizedStringForKey:key value:@"error" table:nil]; }
-
+- (NSString*)pathForImageWithName:(NSString*)name{
+    return [_bundle pathForResource:name ofType:@"png" inDirectory:@"Icons"];
+}
 @end

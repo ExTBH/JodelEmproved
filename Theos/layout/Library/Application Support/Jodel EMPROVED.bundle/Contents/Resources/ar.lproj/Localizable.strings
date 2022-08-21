@@ -31,6 +31,11 @@
 "screenshot_protection" = "حماية تصوير الشاشة";
 "tracking_protection" = "حماية التتبغ";
 
+///About Section
+"source_code" = "السورس كود";
+"twitter" = "ExTBH";
+"email" = "emproved@extbh.xyz";
+
 //Settings description
 "copy_paste_desc" = "تتفعل بالضفط المطول, تحتاج إلى ريستارت للتغيير";
 "screenshot_protection_desc" = "أخذ صور للشاشة بدون تنبيه";

@@ -19,24 +19,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.darkGrayColor;    
-    //NavigatioBar
-    UINavigationBar *navigatioBar = [UINavigationBar new];
-    navigatioBar.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:navigatioBar];
-    [navigatioBar.widthAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.widthAnchor].active = YES;
-    
-    navigatioBar.standardAppearance = [UINavigationBarAppearance new];
-    [navigatioBar.standardAppearance configureWithDefaultBackground];
-    navigatioBar.standardAppearance.backgroundColor = UIColor.blackColor;
-    navigatioBar.standardAppearance.titleTextAttributes = @{NSForegroundColorAttributeName: UIColor.whiteColor};
-    //NavigationBar Items
-    UINavigationItem *navigationBarItem = [[UINavigationItem alloc] initWithTitle:[[JDESettingsManager sharedInstance]
-                                            localizedStringForKey:@"location_spoofer"]];
-    navigationBarItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[[JDESettingsManager sharedInstance]
-                                            localizedStringForKey:@"close"] style:UIBarButtonItemStylePlain target:self
-                                            action:@selector(didTapDismissButton:)];
-    
-    navigatioBar.items = @[navigationBarItem];
     
     //MapView
     _mapView = [MKMapView new];
@@ -45,7 +27,7 @@
     _mapView.showsUserLocation = YES;
     
     [self.view addSubview:_mapView];
-    [_mapView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:50].active = YES;
+    [_mapView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
     [_mapView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
     [_mapView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
     [_mapView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
@@ -67,7 +49,7 @@
     _btn.backgroundColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
     [_btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"map_change_location_hint"]  forState:UIControlStateNormal];
     _btn.titleLabel.font = [UIFont boldSystemFontOfSize:15];
-    _btn.tintColor = UIColor.blackColor;
+    _btn.tintColor = UIColor.labelColor;
     _btn.layer.cornerRadius = 9;
     [_mapView addSubview:_btn];
     [_btn.leadingAnchor constraintEqualToAnchor:_mapView.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
@@ -78,13 +60,9 @@
     
 }
 
-- (void)didTapDismissButton:(UIBarButtonItem*)sender{
-
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
 - (void)didTapSwitchButton:(UIButton*)sender{
     [[JDESettingsManager sharedInstance] updateSpoofedLocationWith:_location];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer{

@@ -4,12 +4,9 @@
 
 //Add JDEvc & Button
 %hook JDLMainFeedNavigationController
-%property (strong, nonatomic) JDEViewController *JDEvc;
-
 -(void)viewDidLoad{
     %orig;
-    JDLMainFeedNavigationController *usuableSelf = self;
-    usuableSelf.JDEvc = [[JDEViewController alloc] init];
+    //JDLMainFeedNavigationController *usuableSelf = self;
 
     [self JDEaddSettingsButton];
 }
@@ -33,8 +30,11 @@
 
 %new
 -(void)presentJDEViewController:(id)sender{
-    JDLMainFeedNavigationController *usuableSelf = self;
-    [self presentViewController:usuableSelf.JDEvc animated:YES completion:nil];
+    //JDLMainFeedNavigationController *usuableSelf = self;
+    JDEViewController *settingsVC = [JDEViewController new];
+    settingsVC.title = @"EMPROVED";
+    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
+    [self presentViewController:navVC animated:YES completion:nil];
 }
 %end
 
