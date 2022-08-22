@@ -1,3 +1,5 @@
+### Open as issue if you have suggestions!
+
 - [x] Save Images
 
 - [x] Upload From Gallery //iOS 14+ for now
@@ -18,4 +20,4 @@
 
 - [ ] ReDesign the Settings //Add aboutme and stuff
   - [ ] Match the theme in subviews
-  - [ ] Add New Section for Source Code/ About Me
+  - [x] Add New Section for Source Code/ About Me

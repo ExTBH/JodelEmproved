@@ -3,9 +3,8 @@
 */
 
 //App
-"jodel_emproved" = "يودل إمبروفد";
+"jodel_emproved" = "يودل إمبروفد (1.1)";
 "emproved" = "إمبروفد";
-"version" = "1.0.6";
 
 //Developer
 "developed_by" = "طور بواسطة @ExTBH إصدار";
@@ -17,8 +16,9 @@
 
 //Settings view
 
-///NavBar
-"status_banner" = "الأداه مازالت تحت التطوير.\rالرجاء الإبلاغ عن جميع المشاكل إلى @ExTBH.";
+///Section headers
+"general" = "الاعدادات العامة";
+"more" = "المزيد";
 
 ///Rows
 "save_images" = "حفظ الصور";
@@ -29,7 +29,7 @@
 "confirm_votes" = "تأكيد التصويت";
 "confirm_replies" = "تأكيد الردود";
 "screenshot_protection" = "حماية تصوير الشاشة";
-"tracking_protection" = "حماية التتبغ";
+"tracking_protection" = "حماية التتبع";
 
 ///About Section
 "source_code" = "السورس كود";
@@ -48,3 +48,10 @@
 "confirm_vote_title" = "تأكيد التصويت";
 "confirm_vote_ok" = "صوِت";
 "confirm_vote_no" = "ألغي";
+
+//UIMenu Action
+"disable" = "إطفاء";
+"enable" = "تشغيل";
+"change_location" = "غير الموقع";
+"link" = "إفتح الرابط";
+"copy" = "نسخ";

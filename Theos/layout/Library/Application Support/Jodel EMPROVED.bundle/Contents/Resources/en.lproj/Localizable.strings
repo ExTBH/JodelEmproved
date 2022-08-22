@@ -3,9 +3,8 @@
 */
 
 //App
-"jodel_emproved" = "Jodel EMPROVED";
+"jodel_emproved" = "Jodel EMPROVED (1.1)";
 "emproved" = "EMPROVED";
-"version" = "1.0.6";
 
 //Developer
 "developed_by" = "Developed By @ExTBH version";
@@ -17,8 +16,9 @@
 
 //Settings view
 
-///NavBar
-"status_banner" = "This is still under development.\rReport all bugs to @ExTBH.";
+///Section headers
+"general" = "General Configuration";
+"more" = "More";
 
 ///rows
 "save_images" = "Save Images";
@@ -48,3 +48,10 @@
 "confirm_vote_title" = "Confirm Vote";
 "confirm_vote_ok" = "Vote";
 "confirm_vote_no" = "Cancel";
+
+//UIMenu Action
+"disable" = "Disable";
+"enable" = "Enable";
+"change_location" = "Change Location";
+"link" = "Open Link";
+"copy" = "Copy";

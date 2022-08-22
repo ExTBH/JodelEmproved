@@ -43,7 +43,6 @@
     ]];
     
     self.JETableview.sectionHeaderHeight = 33;
-    //self.JETableview.allowsSelection = NO;
 }
 
 
@@ -72,14 +71,45 @@
 
 - (void)didTapLocationButton:(UIButton*)sender{
     JDEMapView *mapView = [JDEMapView new];
-    mapView.title = @"Change Location";
+    mapView.title = [_settingsManager localizedStringForKey:@"change_location"];
     [self.navigationController pushViewController:mapView animated:YES];
 }
 - (void)didTapInfo:(id)sender{
     //TODO: - Implement Logic to show an Info view to explain
 }
-
+- (void)openLinkForIndexPath:(NSIndexPath*)indexPath{
+    NSURL *url;
+    switch(indexPath.row){
+        case 0:
+            url = [NSURL URLWithString:@"https://github.com/ExTBH/JodelEmproved/"];
+            if([UIApplication.sharedApplication canOpenURL:url]){
+                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
+                    NSLog(@"%d", success);
+                }];}
+            break;
+        case 1:
+            url = [NSURL URLWithString:@"https://twitter.com/@ExTBH"];
+            if([UIApplication.sharedApplication canOpenURL:url]){
+                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
+                    NSLog(@"%d", success);
+                }];}
+            break;
+        case 2:
+            url = [NSURL URLWithString:@"mailto:emproved@extbh.xyz"];
+            if([UIApplication.sharedApplication canOpenURL:url]){
+                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
+                    NSLog(@"%d", success);
+                }];}
+            break;
+    }
+}
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 2; }
+
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if(section == 0){ return 8;}
+    return 3;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *headerView = [UIView new];
     headerView.backgroundColor = UIColor.clearColor;
@@ -89,10 +119,10 @@
     
     switch (section) {
         case 0:
-            label.text = @"General Configuration";
+            label.text = [_settingsManager localizedStringForKey:@"general"];
             break;
         case 1:
-            label.text = @"About";
+            label.text = [_settingsManager localizedStringForKey:@"more"];
             break;
             
     }    label.textColor = UIColor.secondaryLabelColor;
@@ -105,11 +135,37 @@
     
     return  headerView;
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    switch (section) {
+        case 1:
+            return 33;
+            break;
+        default:
+            return 22;
+    }   
 
-- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(section == 0){ return 8;}
-    return 3;
 }
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    if(section == 1){
+        UIView *footerView = [UIView new];
+        footerView.backgroundColor = UIColor.clearColor;
+        UILabel *label = [UILabel new];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        [footerView addSubview:label];
+        
+        label.text = [_settingsManager localizedStringForKey:@"jodel_emproved"];
+        label.font = [UIFont systemFontOfSize:15];
+        label.textColor = UIColor.tertiaryLabelColor;
+        
+        [NSLayoutConstraint activateConstraints:@[
+            [label.leadingAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.leadingAnchor constant:20],
+            [label.centerYAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.centerYAnchor]
+        ]];
+        return  footerView;
+    }
+    return nil;
+}
+
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"settingsCell"];
@@ -119,6 +175,7 @@
 
     //Cell Icon
     cell.imageView.image = infoDict[@"image"];
+    cell.imageView.tintColor = [UIColor colorWithRed: 0.98 green: 0.49 blue: 0.05 alpha: 1.00];
     //Cell Label
     cell.textLabel.text = infoDict[@"title"];
     // hiding views for section 2
@@ -162,32 +219,10 @@
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    NSURL *url;
-    switch(indexPath.row){
-        case 0:
-            url = [NSURL URLWithString:@"https://github.com/ExTBH/JodelEmproved/"];
-            if([UIApplication.sharedApplication canOpenURL:url]){
-                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
-                    NSLog(@"%d", success);
-                }];}
-            break;
-        case 1:
-            url = [NSURL URLWithString:@"https://twitter.com/@ExTBH"];
-            if([UIApplication.sharedApplication canOpenURL:url]){
-                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
-                    NSLog(@"%d", success);
-                }];}
-            break;
-        case 2:
-            url = [NSURL URLWithString:@"mailto:emproved@extbh.xyz"];
-            if([UIApplication.sharedApplication canOpenURL:url]){
-                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
-                    NSLog(@"%d", success);
-                }];}
-            break;
+    if(indexPath.section == 1){
+        [self openLinkForIndexPath:indexPath];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
@@ -203,13 +238,13 @@
         UISwitch *cellSwitch = cell.contentView.subviews[3];
         
         if (!cellSwitch.isOn) {
-            UIAction *enable = [UIAction actionWithTitle:@"Enable" image:[UIImage systemImageNamed:@"checkmark"] identifier:nil handler:^(UIAction *handler) {
+            UIAction *enable = [UIAction actionWithTitle:[_settingsManager localizedStringForKey:@"enable"] image:[UIImage systemImageNamed:@"checkmark"] identifier:nil handler:^(UIAction *handler) {
                 [cellSwitch setOn:YES animated:YES];
                 [self switchValueChanged:cellSwitch];
                 }];
             [suggestedActions addObject:enable];
         } else {
-            UIAction *disable = [UIAction actionWithTitle:@"Disable" image:[UIImage systemImageNamed:@"xmark"] identifier:nil handler:^(UIAction *handler) {
+            UIAction *disable = [UIAction actionWithTitle:[_settingsManager localizedStringForKey:@"disable"] image:[UIImage systemImageNamed:@"xmark"] identifier:nil handler:^(UIAction *handler) {
             [cellSwitch setOn:NO animated:YES];
             [self switchValueChanged:cellSwitch];
             }];
@@ -218,16 +253,17 @@
         
 
         if(cellSwitch.tag == 2) {
-            UIAction *location = [UIAction actionWithTitle:@"Change Location" image:[UIImage systemImageNamed:@"location"] identifier:nil handler:^(UIAction *handler) {
+            UIAction *location = [UIAction actionWithTitle:[_settingsManager localizedStringForKey:@"change_location"] image:[UIImage systemImageNamed:@"location"] identifier:nil handler:^(UIAction *handler) {
                 [self didTapLocationButton:nil];
             }];
             [suggestedActions addObject:location];
         }
-    } else{
-        UIAction *location = [UIAction actionWithTitle:@"Change Location" image:[UIImage systemImageNamed:@"location"] identifier:nil handler:^(UIAction *handler) {
-                [self didTapLocationButton:nil];
+    }
+    if(indexPath.section == 1){
+        UIAction *openLink = [UIAction actionWithTitle:[_settingsManager localizedStringForKey:@"link"] image:[UIImage systemImageNamed:@"link"] identifier:nil handler:^(UIAction *handler) {
+                [self openLinkForIndexPath:indexPath];
             }];
-        [suggestedActions addObject:location];
+        [suggestedActions addObject:openLink];
 
     }
     UIMenu *menu = [UIMenu menuWithTitle:@"" children:suggestedActions];

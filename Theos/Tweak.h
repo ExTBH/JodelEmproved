@@ -31,8 +31,7 @@
 
 @end
 
-@interface JDLFeedTableViewSource <UITableViewDataSource>
-- (id)tableView:(id)tableView cellForRowAtIndexPath:(id)indexPath;
+@interface JDLFeedTableViewSource <UITableViewDataSource, UITableViewDelegate> //Its both delegate and dataSource. BLKFlexibleHeightBar forwards calls to it
 @end
 
 @interface JDLPostDetailsPostCellV2 : UITableViewCell

@@ -6,8 +6,6 @@
 %hook JDLMainFeedNavigationController
 -(void)viewDidLoad{
     %orig;
-    //JDLMainFeedNavigationController *usuableSelf = self;
-
     [self JDEaddSettingsButton];
 }
 
@@ -30,9 +28,8 @@
 
 %new
 -(void)presentJDEViewController:(id)sender{
-    //JDLMainFeedNavigationController *usuableSelf = self;
     JDEViewController *settingsVC = [JDEViewController new];
-    settingsVC.title = @"EMPROVED";
+    settingsVC.title = [[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"];
     UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
     [self presentViewController:navVC animated:YES completion:nil];
 }
@@ -53,53 +50,6 @@
     return %orig;
 }
 
-%end
-
-//Enable Copy In Main Feed
-%hook FeedCellTextContentViewV2
-
-- (id)initWithFrame:(struct CGRect)frame{
-    if([[JDESettingsManager sharedInstance] featureStateForTag:3]){
-        UIView *view = %orig;
-        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
-                                            initWithTarget:self action:@selector(JDEcopyFeedText:)];
-        lpgr.minimumPressDuration = 0.5;
-        lpgr.delegate = self;
-        [view addGestureRecognizer:lpgr];
-        return view;
-        }
-    return %orig;
-}
-
-%new
-- (void)JDEcopyFeedText:(UILongPressGestureRecognizer *)gestureRecognizer{
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        UIPasteboard.generalPasteboard.string = [[self contentLabel] text];
-        [objc_getClass("Jodel.AppHaptic") makeHeavyFeedback];
-    }   
-}
-%end
-
-//Enable Copy In Sub Posts
-%hook JDLPostDetailsPostCellV2
-- (void)setContentLabel:(id)contentLabel{
-    if([[JDESettingsManager sharedInstance] featureStateForTag:3]){
-        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] 
-                                            initWithTarget:self action:@selector(JDEcopyReplyText:)];
-        lpgr.minimumPressDuration = 0.5;
-        lpgr.delegate = self;
-        [self addGestureRecognizer:lpgr];
-    }
-    %orig;
-}
-
-%new
-- (void)JDEcopyReplyText:(UILongPressGestureRecognizer *)gestureRecognizer{
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        UIPasteboard.generalPasteboard.string = [[self contentLabel] text];
-        [objc_getClass("Jodel.AppHaptic") makeHeavyFeedback];
-    }   
-}
 %end
 
 //Enable Saving Images
@@ -302,15 +252,76 @@
 }
 %end
 
+@interface LoadingTableView : UITableView <UITableViewDelegate>
+@end
+
+%hook LoadingTableView
+
+- (instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style{
+
+    UITableView *orig = %orig;
+    return orig;
+}
+
+%end
+
+%hook JDLFeedTableViewSource
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    CGFloat orig = %orig;
+    return orig;
+}
+%new
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point{
+    
+    if([[JDESettingsManager sharedInstance] featureStateForTag:3]){
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        NSLog(@"JDELogs cell %@", cell);
+        NSString *cellClass = NSStringFromClass([cell class]);
+        //Disabling action for ads and pics and boosted cell
+        for(NSString *bannedClass in @[@"Jodel.AdColumnCell", @"Jodel.JDLFeedPostMediaCellV2", @"Jodel.MultiBoostCell",@"Jodel.JDLPostDetailsPostMediaCellV2"]){
+            if([cellClass isEqualToString:bannedClass]){ return nil; }
+        }
+
+        UIAction *copy = [UIAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"copy"] 
+                                                    image:[UIImage systemImageNamed:@"doc.on.doc"] identifier:nil handler:^(UIAction *handler) {
+                                                        NSLog(@"JDELogs %@", [cell.contentView subviews]);
+                                                        //Handle copying for normal and poll main feed cells
+                                                        if([cellClass isEqualToString:@"Jodel.JDLFeedPostCellV2"] || [cellClass isEqualToString:@"Jodel.FeedPollCellV2"]){
+                                                            UIPasteboard.generalPasteboard.string = [[[cell.contentView subviews][1] contentLabel] text];
+                                                        }
+                                                        //Copying for sub posts
+                                                        if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCellV2"]){
+                                                            //Change cell type to access methods interfaced methods
+                                                            JDLPostDetailsPostCellV2 *cell = [tableView cellForRowAtIndexPath:indexPath];
+                                                            UIPasteboard.generalPasteboard.string = [[cell contentLabel] text];
+                                                        }
+                                                    }];
+
+
+        UIMenu *menu = [UIMenu menuWithTitle:@"" children:@[copy]];
+        UIContextMenuConfiguration *menuConfig = [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil actionProvider:^(NSArray *suggestedActions) { return menu;}
+        ];
+        
+        return  menuConfig;
+    } else { return nil; }
+}
+%end
+
+//DON'T DELETE WILL BREAK ABOVE METHOD
+%hook JDLPostDetailsPostCellV2
+%end
 
 %ctor {
     %init(JDLMainFeedNavigationController=objc_getClass("Jodel.JDLMainFeedNavigationController"),
     PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
     PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
     ScreenshotService=objc_getClass("Jodel.ScreenshotService"),
-    FeedCellTextContentViewV2=objc_getClass("Jodel.FeedCellTextContentViewV2"),
     FeedCellVoteView=objc_getClass("Jodel.JDLFeedCellVoteView"),
     JDLPostDetailsPostCellV2=objc_getClass("Jodel.JDLPostDetailsPostCellV2"),
-    ChatboxViewController=objc_getClass("Jodel.ChatboxViewController"));
+    ChatboxViewController=objc_getClass("Jodel.ChatboxViewController"),
+    LoadingTableView=objc_getClass("Jodel.LoadingTableView"),
+    JDLFeedTableViewSource=objc_getClass("Jodel.JDLFeedTableViewSource"));
 }
 

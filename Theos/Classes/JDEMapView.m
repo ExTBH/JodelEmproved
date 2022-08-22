@@ -46,7 +46,7 @@
     [_btn addTarget:self action:@selector(didTapSwitchButton:) forControlEvents:UIControlEventTouchUpInside];
     _btn.enabled = NO;
     _btn.translatesAutoresizingMaskIntoConstraints = NO;
-    _btn.backgroundColor = [UIColor colorWithRed:1 green:.710 blue:.298 alpha:1];
+    _btn.backgroundColor = [UIColor colorWithRed: 0.98 green: 0.49 blue: 0.05 alpha: 1.00];
     [_btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"map_change_location_hint"]  forState:UIControlStateNormal];
     _btn.titleLabel.font = [UIFont boldSystemFontOfSize:15];
     _btn.tintColor = UIColor.labelColor;
