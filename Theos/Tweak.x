@@ -252,26 +252,9 @@
 }
 %end
 
-@interface LoadingTableView : UITableView <UITableViewDelegate>
-@end
-
-%hook LoadingTableView
-
-- (instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style{
-
-    UITableView *orig = %orig;
-    return orig;
-}
-
-%end
-
+//Copying posts through Context Menus
 %hook JDLFeedTableViewSource
 
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    CGFloat orig = %orig;
-    return orig;
-}
 %new
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point{
     
