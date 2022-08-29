@@ -12,9 +12,12 @@
     self = [super init];
     if (self != nil){
         _tweakSettings = [[NSUserDefaults alloc] initWithSuiteName:@suiteName];
-        _bundle = [NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"];
-        if ([NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"] == nil){
-            NSLog(@"JDELogs its a nil");
+        if([[NSBundle mainBundle] pathForResource:@"Jodel EMPROVED" ofType:@"bundle"] != nil){
+            NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Jodel EMPROVED" ofType:@"bundle"];
+            _bundle = [NSBundle bundleWithPath:bundlePath];
+            }
+        else{
+            _bundle = [NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"];
         }
     }
     return self;
