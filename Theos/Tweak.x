@@ -304,7 +304,6 @@
     FeedCellVoteView=objc_getClass("Jodel.JDLFeedCellVoteView"),
     JDLPostDetailsPostCellV2=objc_getClass("Jodel.JDLPostDetailsPostCellV2"),
     ChatboxViewController=objc_getClass("Jodel.ChatboxViewController"),
-    LoadingTableView=objc_getClass("Jodel.LoadingTableView"),
     JDLFeedTableViewSource=objc_getClass("Jodel.JDLFeedTableViewSource"));
 }
 
