@@ -1,8 +1,8 @@
 TARGET := iphone:clang:latest:13.0
 INSTALL_TARGET_PROCESSES = Jodel
 
-before-package::
-	@cp control layout/DEBIAN/control
+# before-package::
+# 	@cp control layout/DEBIAN/control
 
 include $(THEOS)/makefiles/common.mk
 
