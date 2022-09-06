@@ -95,7 +95,7 @@
                 }];}
             break;
         case 2:
-            url = [NSURL URLWithString:@"mailto:emproved@extbh.xyz"];
+            url = [NSURL URLWithString:@"mailto:natheer@extbh.dev"];
             if([UIApplication.sharedApplication canOpenURL:url]){
                 [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
                     NSLog(@"%d", success);
