@@ -6,6 +6,6 @@ Description: Customizing the Jodel app
 Depiction: https://repo.extbh.dev/dev.extbh.jodelemproved/
 Homepage: https://extbh.dev
 Maintainer: ExT
-Author: ExT <emproved@extbh.xyz>
+Author: ExT <natheer@extbh.dev>
 Section: Tweaks
 Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 13.0)
