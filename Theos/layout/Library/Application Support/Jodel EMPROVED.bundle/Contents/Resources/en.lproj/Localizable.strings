@@ -3,7 +3,6 @@
 */
 
 //App
-"jodel_emproved" = "Jodel EMPROVED (1.1.1)";
 "emproved" = "EMPROVED";
 
 //Developer
@@ -34,7 +33,6 @@
 ///About Section
 "source_code" = "Source Code";
 "twitter" = "ExTBH";
-"email" = "emproved@extbh.xyz";
 
 //Settings description
 "copy_paste_desc" = "Activates by long press, needs restart for changes";

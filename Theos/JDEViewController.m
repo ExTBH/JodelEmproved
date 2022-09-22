@@ -88,26 +88,31 @@
                 }];}
             break;
         case 1:
-            url = [NSURL URLWithString:@"https://twitter.com/@ExTBH"];
-            if([UIApplication.sharedApplication canOpenURL:url]){
-                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
-                    NSLog(@"%d", success);
-                }];}
-            break;
-        case 2:
-            url = [NSURL URLWithString:@"mailto:natheer@extbh.dev"];
-            if([UIApplication.sharedApplication canOpenURL:url]){
-                [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
-                    NSLog(@"%d", success);
-                }];}
-            break;
+            {
+                url = [NSURL URLWithString:@"https://twitter.com/@ExTBH"];
+
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                message:@"DO NOT MESSAGE ME ABOUT BANS, I CAN NOT AND WIL NOT UNBAN YOU.\nIF YOU WERE GIVEN THIS IN SIDELOADED APP, NOT MY PROBLEM!"
+                                preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"OK!" style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction * action) {
+                                    if([UIApplication.sharedApplication canOpenURL:url]){
+                                        [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success){
+                                            NSLog(@"%d", success);
+                                        }];}
+                                                    }];
+
+                [alert addAction:defaultAction];
+                [self presentViewController:alert animated:YES completion:nil];
+                break;
+            }
     }
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 2; }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0){ return 8;}
-    return 3;
+    return 2;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
@@ -138,7 +143,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     switch (section) {
         case 1:
-            return 33;
+            return 44;
             break;
         default:
             return 22;
@@ -152,14 +157,20 @@
         UILabel *label = [UILabel new];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         [footerView addSubview:label];
-        
-        label.text = [_settingsManager localizedStringForKey:@"jodel_emproved"];
+        NSString *info = [NSString stringWithFormat:@"Jodel EMPROVED (1.1.1-1), %@, %@",
+                [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"],
+                [[NSBundle mainBundle] infoDictionary][@"CFBundleIdentifier"]];
+        label.text = info;
         label.font = [UIFont systemFontOfSize:15];
         label.textColor = UIColor.tertiaryLabelColor;
-        
+
+        label.numberOfLines = 0;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+
         [NSLayoutConstraint activateConstraints:@[
-            [label.leadingAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.leadingAnchor constant:20],
-            [label.centerYAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.centerYAnchor]
+            [label.leftAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.leftAnchor constant:20],
+            [label.centerYAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.centerYAnchor],
+            [label.rightAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.rightAnchor constant:20],
         ]];
         return  footerView;
     }

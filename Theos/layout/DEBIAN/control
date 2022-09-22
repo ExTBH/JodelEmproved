@@ -1,6 +1,6 @@
 Package: dev.extbh.jodelemproved
 Name: Jodel EMPROVED
-Version: 1.1.1
+Version: 1.1.1-1
 Architecture: iphoneos-arm
 Description: Customizing the Jodel app
 Depiction: https://repo.extbh.dev/dev.extbh.jodelemproved/

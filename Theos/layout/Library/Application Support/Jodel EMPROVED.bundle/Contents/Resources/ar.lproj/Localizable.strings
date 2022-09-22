@@ -3,7 +3,6 @@
 */
 
 //App
-"jodel_emproved" = "يودل إمبروفد (1.1.1)";
 "emproved" = "إمبروفد";
 
 //Developer
@@ -34,7 +33,6 @@
 ///About Section
 "source_code" = "السورس كود";
 "twitter" = "ExTBH";
-"email" = "emproved@extbh.xyz";
 
 //Settings description
 "copy_paste_desc" = "تتفعل بالضفط المطول, تحتاج إلى ريستارت للتغيير";
