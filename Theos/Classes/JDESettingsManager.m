@@ -32,7 +32,7 @@
     return sharedInstance;
 
 }
-- (NSDictionary*)cellInfoForPath:(NSIndexPath*)indexPath;{
+- (NSDictionary*)cellInfoForPath:(NSIndexPath*)indexPath{
     NSDictionary *info;
     switch(indexPath.section){
         case 0:
@@ -97,11 +97,6 @@
                     info = @{
                         @"title": [self localizedStringForKey:@"twitter"],
                         @"image": [[UIImage alloc] initWithContentsOfFile:[self pathForImageWithName:@"twitter"]] 
-                    }; break;
-                case 2:
-                    info = @{
-                        @"title": [self localizedStringForKey:@"email"],
-                        @"image": [UIImage systemImageNamed:@"envelope"]
                     }; break;
             }
     }
