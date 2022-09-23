@@ -12,6 +12,8 @@
 %new
 -(void)JDEaddSettingsButton{
     @try {
+        [[JDESettingsManager sharedInstance] logString:@"Adding settings button"];
+
         UIView *view = [self viewIfLoaded];
         UIButton *btn = [[[JDEButtons alloc] init] defaultButton];
         [btn addTarget:self action:@selector(presentJDEViewController:) forControlEvents:UIControlEventTouchUpInside];
@@ -21,9 +23,12 @@
         [btn.topAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.topAnchor constant:7].active = YES;
         [btn.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:20].active = YES;
         [btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
-
+        
+        [[JDESettingsManager sharedInstance] logString:@"Added settings button"];
     }
-    @catch(NSException *exception){}
+    @catch(NSException *exception){
+        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Failed to add settings button: %@", exception]];
+    }
 }
 
 %new

@@ -1,5 +1,5 @@
 #import "JDEViewController.h"
-
+#import "Classes/JDELogsVC.h"
 
 // Private declarations; this class only.
 @interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource>
@@ -112,7 +112,7 @@
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0){ return 8;}
-    return 2;
+    return 3;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
@@ -154,9 +154,11 @@
     if(section == 1){
         UIView *footerView = [UIView new];
         footerView.backgroundColor = UIColor.clearColor;
+
         UILabel *label = [UILabel new];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         [footerView addSubview:label];
+
         NSString *info = [NSString stringWithFormat:@"Jodel EMPROVED (1.1.1-1), %@, %@",
                 [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"],
                 [[NSBundle mainBundle] infoDictionary][@"CFBundleIdentifier"]];
@@ -214,9 +216,9 @@
     } else{
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        if(indexPath.row != 2){
-            UIImage *tst = [UIImage resizeImageFromImage:infoDict[@"image"] withSize:CGSizeMake(25, 25)];
-            cell.imageView.image = tst;
+        if(indexPath.section == 1 && indexPath.row != 2){
+            UIImage *icon = [UIImage resizeImageFromImage:infoDict[@"image"] withSize:CGSizeMake(25, 25)];
+            cell.imageView.image = icon;
         }
     }
 
@@ -233,6 +235,10 @@
     if(indexPath.section == 1){
         [self openLinkForIndexPath:indexPath];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
+    if(indexPath.section == 1 && indexPath.row == 2){
+        JDELogsVC *logsVC = [JDELogsVC new];
+        [self.navigationController pushViewController:logsVC animated:YES];
     }
 }
 

@@ -30,9 +30,10 @@
 "screenshot_protection" = "Screenshot Protection";
 "tracking_protection" = "Tracking Protection";
 
-///About Section
+///More Section
 "source_code" = "Source Code";
 "twitter" = "ExTBH";
+"logs" = "Tweak Logs";
 
 //Settings description
 "copy_paste_desc" = "Activates by long press, needs restart for changes";

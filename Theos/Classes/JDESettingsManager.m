@@ -12,6 +12,7 @@
     self = [super init];
     if (self != nil){
         _tweakSettings = [[NSUserDefaults alloc] initWithSuiteName:@suiteName];
+        //bundle path stuff
         if([[NSBundle mainBundle] pathForResource:@"Jodel EMPROVED" ofType:@"bundle"] != nil){
             NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Jodel EMPROVED" ofType:@"bundle"];
             _bundle = [NSBundle bundleWithPath:bundlePath];
@@ -19,6 +20,10 @@
         else{
             _bundle = [NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"];
         }
+        //logFile stuff
+        NSString *docsDir = [NSHomeDirectory() stringByAppendingPathComponent:@"tmp"];
+        self.logFile = [docsDir stringByAppendingPathComponent:@"JDELogs.log"];
+        
     }
     return self;
 }
@@ -98,6 +103,11 @@
                         @"title": [self localizedStringForKey:@"twitter"],
                         @"image": [[UIImage alloc] initWithContentsOfFile:[self pathForImageWithName:@"twitter"]] 
                     }; break;
+                case 2:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"logs"],
+                        @"image": [UIImage systemImageNamed:@"doc.text"]
+                    }; break;
             }
     }
     return info;
@@ -114,5 +124,19 @@
 - (NSString*)localizedStringForKey:(NSString*)key{ return [_bundle localizedStringForKey:key value:@"error" table:nil]; }
 - (NSString*)pathForImageWithName:(NSString*)name{
     return [_bundle pathForResource:name ofType:@"png" inDirectory:@"Icons"];
+}
+- (void)logString:(NSString*)string{
+    string = [[NSString stringWithFormat:@"[%@]", [[NSDate now] description]] stringByAppendingString:string];
+    string = [string stringByAppendingString:@"\n"];
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:self.logFile];
+
+    if(fileHandle){
+        [fileHandle seekToEndOfFile];
+        [fileHandle writeData:[string dataUsingEncoding:NSUTF8StringEncoding]];
+        [fileHandle closeFile];
+    }
+    else{
+        [string writeToFile:self.logFile atomically:YES  encoding:NSUTF8StringEncoding error:nil];
+    }
 }
 @end

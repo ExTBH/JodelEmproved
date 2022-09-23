@@ -5,6 +5,8 @@
 #import <objc/runtime.h>
 
 @interface JDESettingsManager : NSObject
+@property (strong, nonatomic) NSString *logFile;
+
 + (JDESettingsManager *)sharedInstance;
 - (NSDictionary*)cellInfoForPath:(NSIndexPath*)indexPath;
 - (void)updateSpoofedLocationWith:(CLLocation*)newLocation;
@@ -12,5 +14,6 @@
 - (BOOL)featureStateForTag:(NSUInteger)row;
 - (void)featureStateChangedTo:(BOOL)newState forTag:(NSUInteger)tag;
 - (NSString*)localizedStringForKey:(NSString*)key;
+- (void)logString:(NSString*)string;
 @end
 
