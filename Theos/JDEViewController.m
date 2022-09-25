@@ -46,23 +46,6 @@
 }
 
 
--(BOOL)addSettingsButtonForView:(UIView*)view{
-    @try {
-        UIButton *btn = [[[JDEButtons alloc] init] defaultButton];
-        [view addSubview:btn];
-        //Constraints
-        [btn.topAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.topAnchor constant:10].active = YES;
-        [btn.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:15].active = YES;
-        [btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
-
-        
-        return YES;
-    }
-    @catch(NSException *exception){
-        return NO;
-    }
-}
-
 -(void)removeSettingsVC:(id)sender{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -159,7 +142,7 @@
         label.translatesAutoresizingMaskIntoConstraints = NO;
         [footerView addSubview:label];
 
-        NSString *info = [NSString stringWithFormat:@"Jodel EMPROVED (1.1.1-1), %@, %@",
+        NSString *info = [NSString stringWithFormat:@"Jodel EMPROVED (%@), %@, %@", PACKAGE_VERSION,
                 [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"],
                 [[NSBundle mainBundle] infoDictionary][@"CFBundleIdentifier"]];
         label.text = info;

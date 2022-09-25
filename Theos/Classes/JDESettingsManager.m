@@ -5,6 +5,8 @@
 @interface JDESettingsManager()
 @property (strong, nonatomic) NSUserDefaults *tweakSettings;
 @property (strong, nonatomic) NSBundle *bundle;
+@property (strong, nonatomic, readwrite) NSString *logFile;
+@property (nonatomic, readwrite) BOOL logFileExists;
 @end
 
 @implementation JDESettingsManager
@@ -23,7 +25,7 @@
         //logFile stuff
         NSString *docsDir = [NSHomeDirectory() stringByAppendingPathComponent:@"tmp"];
         self.logFile = [docsDir stringByAppendingPathComponent:@"JDELogs.log"];
-        
+        self.logFileExists = [[NSFileManager defaultManager] fileExistsAtPath:self.logFile];
     }
     return self;
 }
@@ -126,7 +128,7 @@
     return [_bundle pathForResource:name ofType:@"png" inDirectory:@"Icons"];
 }
 - (void)logString:(NSString*)string{
-    string = [[NSString stringWithFormat:@"[%@]", [[NSDate now] description]] stringByAppendingString:string];
+    string = [[NSString stringWithFormat:@"[%@] ", [[NSDate now] description]] stringByAppendingString:string];
     string = [string stringByAppendingString:@"\n"];
     NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:self.logFile];
 

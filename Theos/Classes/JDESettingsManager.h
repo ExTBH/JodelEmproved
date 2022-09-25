@@ -5,7 +5,8 @@
 #import <objc/runtime.h>
 
 @interface JDESettingsManager : NSObject
-@property (strong, nonatomic) NSString *logFile;
+@property (strong, nonatomic, readonly) NSString *logFile;
+@property (nonatomic, readonly) BOOL logFileExists;
 
 + (JDESettingsManager *)sharedInstance;
 - (NSDictionary*)cellInfoForPath:(NSIndexPath*)indexPath;
