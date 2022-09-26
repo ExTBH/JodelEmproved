@@ -280,8 +280,8 @@
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         NSString *cellClass = NSStringFromClass([cell class]);
         //Disabling action for ads and pics and boosted cell
-        // Jodel.JDLFeedPostMediaCellV2 seems to be replaced in favor of Jodel.JDLFeedPostMediaCell as of 7.57
-        for(NSString *bannedClass in @[@"Jodel.AdColumnCell", @"Jodel.JDLFeedPostMediaCellV2", @"Jodel.JDLFeedPostMediaCell", @"Jodel.MultiBoostCell",@"Jodel.JDLPostDetailsPostMediaCellV2"]){
+        // Jodel.JDLFeedPostMediaCellV2 seems to be replaced in favor of Jodel.JDLFeedPostMediaCell as of 7.57, same for Jodel.JDLPostDetailsPostMediaCellV2
+        for(NSString *bannedClass in @[@"Jodel.AdColumnCell", @"Jodel.JDLFeedPostMediaCellV2", @"Jodel.JDLFeedPostMediaCell", @"Jodel.MultiBoostCell",@"Jodel.JDLPostDetailsPostMediaCellV2", @"Jodel.JDLPostDetailsPostMediaCell"]){
             if([cellClass isEqualToString:bannedClass]){ 
                 [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"don't show context menu for post (%@)", cellClass]];
                 return nil;
