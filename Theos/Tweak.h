@@ -4,15 +4,6 @@
 #import "JDEViewController.h"
 #import "Headers/AppHaptic.h"
 
-
-@interface JDLMainFeedNavigationController : UINavigationController
-@property (strong, nonatomic) NSUserDefaults *JDEsettings;
-@property (strong, nonatomic) JDEViewController *JDEvc;
--(BOOL)JDEaddSettingsButton;
--(void)presentJDEViewController:(id)sender;
-@end
-
-
 @interface PictureFeedViewController : UIViewController
 @property (weak, nonatomic, readwrite) UIButton *addReactionButton;
 @end

@@ -1,5 +1,5 @@
 #import "JDEViewController.h"
-
+#import "Classes/JDELogsVC.h"
 
 // Private declarations; this class only.
 @interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource>
@@ -45,23 +45,6 @@
     self.JETableview.sectionHeaderHeight = 33;
 }
 
-
--(BOOL)addSettingsButtonForView:(UIView*)view{
-    @try {
-        UIButton *btn = [[[JDEButtons alloc] init] defaultButton];
-        [view addSubview:btn];
-        //Constraints
-        [btn.topAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.topAnchor constant:10].active = YES;
-        [btn.leadingAnchor constraintEqualToAnchor:view.safeAreaLayoutGuide.leadingAnchor constant:15].active = YES;
-        [btn.widthAnchor constraintEqualToAnchor:view.widthAnchor multiplier:0.25].active = YES;
-
-        
-        return YES;
-    }
-    @catch(NSException *exception){
-        return NO;
-    }
-}
 
 -(void)removeSettingsVC:(id)sender{
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -112,7 +95,7 @@
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0){ return 8;}
-    return 2;
+    return 3;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
@@ -154,10 +137,12 @@
     if(section == 1){
         UIView *footerView = [UIView new];
         footerView.backgroundColor = UIColor.clearColor;
+
         UILabel *label = [UILabel new];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         [footerView addSubview:label];
-        NSString *info = [NSString stringWithFormat:@"Jodel EMPROVED (1.1.1-1), %@, %@",
+
+        NSString *info = [NSString stringWithFormat:@"Jodel EMPROVED (%@), %@, %@", PACKAGE_VERSION,
                 [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"],
                 [[NSBundle mainBundle] infoDictionary][@"CFBundleIdentifier"]];
         label.text = info;
@@ -214,9 +199,9 @@
     } else{
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        if(indexPath.row != 2){
-            UIImage *tst = [UIImage resizeImageFromImage:infoDict[@"image"] withSize:CGSizeMake(25, 25)];
-            cell.imageView.image = tst;
+        if(indexPath.section == 1 && indexPath.row != 2){
+            UIImage *icon = [UIImage resizeImageFromImage:infoDict[@"image"] withSize:CGSizeMake(25, 25)];
+            cell.imageView.image = icon;
         }
     }
 
@@ -233,6 +218,10 @@
     if(indexPath.section == 1){
         [self openLinkForIndexPath:indexPath];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
+    if(indexPath.section == 1 && indexPath.row == 2){
+        JDELogsVC *logsVC = [JDELogsVC new];
+        [self.navigationController pushViewController:logsVC animated:YES];
     }
 }
 
