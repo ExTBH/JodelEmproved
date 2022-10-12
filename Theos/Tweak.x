@@ -92,8 +92,12 @@
 
 %end
 
+
+@interface JDLAVCamCaptureManager : NSObject
+@end
+
 //Enable Uploading From Gallery
-%hook JDLImageCaptureViewController
+%hook ImageCaptureViewController
 - (void)viewDidLoad{
     %orig;
     if([[JDESettingsManager sharedInstance] featureStateForTag:1]){
@@ -165,12 +169,23 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
+//
+// Broken
+//
+
 %new
 - (void)loadImage:(UIImage*)image{
     [[JDESettingsManager sharedInstance] logString:@"Loading selected image"];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self captureManagerStillImageCaptured:self image:image];
     });
+}
+
+// Required as of 7.59 because the app checks the method from protocol [JDLAVCamCaptureManager isFrontCamera], delegate is self
+// Improve the hook later
+%new
+- (BOOL)isFrontCamera{
+    return NO;
 }
 %end
 
@@ -324,6 +339,7 @@
     JDLPostDetailsPostCellV2=objc_getClass("Jodel.JDLPostDetailsPostCellV2"),
     ChatboxViewController=objc_getClass("Jodel.ChatboxViewController"),
     JDLFeedTableViewSource=objc_getClass("Jodel.JDLFeedTableViewSource"),
-    MainFeedViewController=objc_getClass("Jodel.MainFeedViewController"));
+    MainFeedViewController=objc_getClass("Jodel.MainFeedViewController"),
+    ImageCaptureViewController=objc_getClass("Jodel.ImageCaptureViewController"));
 }
 

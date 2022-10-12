@@ -12,7 +12,7 @@
 - (bool)capturePhoto;
 @end
 
-@interface JDLImageCaptureViewController : UIViewController <PHPickerViewControllerDelegate,
+@interface ImageCaptureViewController : UIViewController <PHPickerViewControllerDelegate,
                                                             UIImagePickerControllerDelegate,
                                                             UINavigationControllerDelegate>
 - (void)JDEuploadImage:(id)sender;
