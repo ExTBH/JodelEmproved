@@ -19,6 +19,4 @@
 
 - [ ] Image Lookup Built-in (Just too hard)
 
-- [ ] ReDesign the Settings //Add aboutme and stuff
-  - [ ] Match the theme in subviews
-  - [x] Add New Section for Source Code/ About Me
+- [x] ReDesign the Settings //Add aboutme and stuff

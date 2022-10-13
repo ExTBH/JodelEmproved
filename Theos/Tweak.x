@@ -92,10 +92,6 @@
 
 %end
 
-
-@interface JDLAVCamCaptureManager : NSObject
-@end
-
 //Enable Uploading From Gallery
 %hook ImageCaptureViewController
 - (void)viewDidLoad{
@@ -296,7 +292,13 @@
         NSString *cellClass = NSStringFromClass([cell class]);
         //Disabling action for ads and pics and boosted cell
         // Jodel.JDLFeedPostMediaCellV2 seems to be replaced in favor of Jodel.JDLFeedPostMediaCell as of 7.57, same for Jodel.JDLPostDetailsPostMediaCellV2
-        for(NSString *bannedClass in @[@"Jodel.AdColumnCell", @"Jodel.JDLFeedPostMediaCellV2", @"Jodel.JDLFeedPostMediaCell", @"Jodel.MultiBoostCell",@"Jodel.JDLPostDetailsPostMediaCellV2", @"Jodel.JDLPostDetailsPostMediaCell"]){
+        NSArray *bannedClasses = @[@"Jodel.AdColumnCell",
+                                    @"Jodel.JDLFeedPostMediaCellV2",
+                                    @"Jodel.JDLFeedPostMediaCell",
+                                    @"Jodel.MultiBoostCell",
+                                    @"Jodel.JDLPostDetailsPostMediaCellV2",
+                                    @"Jodel.JDLPostDetailsPostMediaCell"];
+        for(NSString *bannedClass in bannedClasses){
             if([cellClass isEqualToString:bannedClass]){ 
                 [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"don't show context menu for post (%@)", cellClass]];
                 return nil;
@@ -306,14 +308,22 @@
         UIAction *copy = [UIAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"copy"] 
                                                     image:[UIImage systemImageNamed:@"doc.on.doc"] identifier:nil handler:^(UIAction *handler) {
                                                         //Handle copying for normal and poll main feed cells
-                                                        if([cellClass isEqualToString:@"Jodel.JDLFeedPostCellV2"] || [cellClass isEqualToString:@"Jodel.FeedPollCellV2"]){
-                                                            UIPasteboard.generalPasteboard.string = [[[cell.contentView subviews][1] contentLabel] text];
+                                                        if([cellClass isEqualToString:@"Jodel.JDLFeedPostCellV2"] 
+                                                            || [cellClass isEqualToString:@"Jodel.JDLFeedPostCell"] 
+                                                            || [cellClass isEqualToString:@"Jodel.FeedPollCellV2"]
+                                                            || [cellClass isEqualToString:@"Jodel.FeedPollCell"]){
+                                                                UIPasteboard.generalPasteboard.string = [[[cell.contentView subviews][1] contentLabel] text];
+                                                                [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
                                                         }
                                                         //Copying for sub posts
-                                                        if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCellV2"]){
+                                                        else if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCellV2"] || [cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCell"]){
                                                             //Change cell type to access methods interfaced methods
                                                             JDLPostDetailsPostCellV2 *cell = [tableView cellForRowAtIndexPath:indexPath];
                                                             UIPasteboard.generalPasteboard.string = [[cell contentLabel] text];
+                                                            [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
+                                                        }
+                                                        else{
+                                                            [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Failed to copy for (%@)", cellClass]];
                                                         }
                                                     }];
 
