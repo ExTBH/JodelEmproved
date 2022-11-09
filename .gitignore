@@ -1,2 +1,4 @@
 Theos/packages/
-Theos/.theos
+.theos
+.cache/
+compile_commands.json

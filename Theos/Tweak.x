@@ -104,7 +104,6 @@
             if([temp isMemberOfClass:objc_getClass("Jodel.ButtonWithBanner")]){ realGalleryBtn = temp; }
         }
         UIButton *btn = [[[JDEButtons alloc] init] buttonWithImageNamed:@"arrow.up.circle.fill"];
-        //[btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"upload"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         //Constraints
@@ -293,10 +292,8 @@
         //Disabling action for ads and pics and boosted cell
         // Jodel.JDLFeedPostMediaCellV2 seems to be replaced in favor of Jodel.JDLFeedPostMediaCell as of 7.57, same for Jodel.JDLPostDetailsPostMediaCellV2
         NSArray *bannedClasses = @[@"Jodel.AdColumnCell",
-                                    @"Jodel.JDLFeedPostMediaCellV2",
                                     @"Jodel.JDLFeedPostMediaCell",
                                     @"Jodel.MultiBoostCell",
-                                    @"Jodel.JDLPostDetailsPostMediaCellV2",
                                     @"Jodel.JDLPostDetailsPostMediaCell"];
         for(NSString *bannedClass in bannedClasses){
             if([cellClass isEqualToString:bannedClass]){ 
@@ -308,15 +305,13 @@
         UIAction *copy = [UIAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"copy"] 
                                                     image:[UIImage systemImageNamed:@"doc.on.doc"] identifier:nil handler:^(UIAction *handler) {
                                                         //Handle copying for normal and poll main feed cells
-                                                        if([cellClass isEqualToString:@"Jodel.JDLFeedPostCellV2"] 
-                                                            || [cellClass isEqualToString:@"Jodel.JDLFeedPostCell"] 
-                                                            || [cellClass isEqualToString:@"Jodel.FeedPollCellV2"]
+                                                        if([cellClass isEqualToString:@"Jodel.JDLFeedPostCell"] 
                                                             || [cellClass isEqualToString:@"Jodel.FeedPollCell"]){
                                                                 UIPasteboard.generalPasteboard.string = [[[cell.contentView subviews][1] contentLabel] text];
                                                                 [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
                                                         }
                                                         //Copying for sub posts
-                                                        else if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCellV2"] || [cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCell"]){
+                                                        else if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCell"]){
                                                             //Change cell type to access methods interfaced methods
                                                             JDLPostDetailsPostCellV2 *cell = [tableView cellForRowAtIndexPath:indexPath];
                                                             UIPasteboard.generalPasteboard.string = [[cell contentLabel] text];
@@ -340,6 +335,56 @@
 //DON'T DELETE WILL BREAK ABOVE METHOD
 %hook JDLPostDetailsPostCellV2
 %end
+
+%hook UIColor
++ (UIColor *)colorNamed:(NSString *)name{
+
+    if ([name isEqualToString:@"mainColor"]){
+        return [UIColor systemBlueColor];
+    }
+    // User Section
+    else if ([name isEqualToString:@"meColor"]){
+        return [UIColor systemRedColor];
+    }
+    // Channel Section
+    else if ([name isEqualToString:@"channelColor"]){
+        return [UIColor systemGreenColor];
+    }
+
+    else if ([name isEqualToString:@"channelNotification"]){
+        return [UIColor systemRedColor];
+    }
+    else if ([name isEqualToString:@"notificationColor"]){
+        return [UIColor systemPurpleColor];
+    }
+    // poll cells color, make it transparent so u can see
+    else if ([name isEqualToString:@"pollBgColor"]){
+        return [UIColor systemYellowColor];
+    }
+    //Karma and some text
+    else if ([name isEqualToString:@"customLightGrayColor"]){
+        return [UIColor systemTealColor];
+    }
+    else{
+        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"ColorNamd: (%@)", name]];
+    }
+
+    return %orig;
+}
+
+%end
+
+// %hook JDLBasePostCellViewModel
+// - (void)setPostColor:(id)arg1{
+//     [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"postColor: (%@)", arg1]];
+// }
+// - (id)postColor{
+    
+//     [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"postColor: (%@)", %orig]];
+//     return [UIColor systemRedColor];
+// }
+
+// %end
 
 %ctor {
     %init(PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
