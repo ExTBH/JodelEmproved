@@ -1,4 +1,5 @@
 #import "JDEViewController.h"
+#include <UIKit/UIColor.h>
 #include "Classes/ThemingViewController.h"
 #include <UIKit/UIImage.h>
 #import "Classes/JDELogsVC.h"
@@ -31,12 +32,14 @@
                                                                         action:@selector(didTapLocationButton:)];
 }
 - (void)configureTableview{
-    self.JETableview = [[UITableView alloc] initWithFrame:CGRectNull style:UITableViewStyleGrouped];
+    self.JETableview = [[UITableView alloc] initWithFrame:CGRectNull style:UITableViewStyleInsetGrouped];
     self.JETableview.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.JETableview];
     self.JETableview.delegate = self;
     self.JETableview.dataSource = self;
     
+    self.JETableview.backgroundColor = UIColor.systemGroupedBackgroundColor;
+
     [NSLayoutConstraint activateConstraints:@[
         [self.JETableview.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
         [self.JETableview.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
@@ -116,7 +119,7 @@
     }    label.textColor = UIColor.secondaryLabelColor;
     
     [NSLayoutConstraint activateConstraints:@[
-        [label.leadingAnchor constraintEqualToAnchor:headerView.safeAreaLayoutGuide.leadingAnchor constant:20],
+        [label.leadingAnchor constraintEqualToAnchor:headerView.safeAreaLayoutGuide.leadingAnchor],
         [label.centerYAnchor constraintEqualToAnchor:headerView.safeAreaLayoutGuide.centerYAnchor]
     ]];
     
@@ -153,9 +156,9 @@
         label.lineBreakMode = NSLineBreakByWordWrapping;
 
         [NSLayoutConstraint activateConstraints:@[
-            [label.leftAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.leftAnchor constant:20],
+            [label.leftAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.leftAnchor],
             [label.centerYAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.centerYAnchor],
-            [label.rightAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.rightAnchor constant:20],
+            [label.rightAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.rightAnchor],
         ]];
         return  footerView;
     }
@@ -165,7 +168,6 @@
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"settingsCell"];
-    cell.backgroundColor = UIColor.clearColor;
     NSMutableArray<NSLayoutConstraint *> *consts = [NSMutableArray new];
     NSDictionary *infoDict = [_settingsManager cellInfoForPath:indexPath];
 

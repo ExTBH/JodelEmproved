@@ -1,8 +1,12 @@
 #import <UIKit/UIKit.h>
-//#import <Alderis/Alderis.h>
-@import Alderis
+#import "Exts.h"
 @interface ThemingViewController : UIViewController
 @end
+
+@interface ColorCell : UITableViewCell
+@property (nonatomic, strong) UIButton *colorButton;
+@end
+
 
 #define main "mainColor"
 #define secondary "customLightGrayColor"
@@ -13,6 +17,14 @@
 #define notification "notificationColor"
 #define pollCell "pollBgColor"
 
-enum Options{
-    Main = 0,
+
+typedef NS_ENUM(NSUInteger, ThemeOption){
+    ThemeOptionMainColor,
+    ThemeOptionSecondaryColor,
+    ThemeOptionUserSectionColor,
+    ThemeOptionChannelsSectionColor,
+    ThemeOptionNotificationsSectionColor,
+    ThemeOptionPollCellsBackgroundColor
+
 };
+

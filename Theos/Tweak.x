@@ -164,9 +164,6 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-//
-// Broken
-//
 
 %new
 - (void)loadImage:(UIImage*)image{
@@ -178,6 +175,7 @@
 
 // Required as of 7.59 because the app checks the method from protocol [JDLAVCamCaptureManager isFrontCamera], delegate is self
 // Improve the hook later
+// Side effects, Captured photos wont get flipped 
 %new
 - (BOOL)isFrontCamera{
     return NO;
@@ -290,7 +288,6 @@
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         NSString *cellClass = NSStringFromClass([cell class]);
         //Disabling action for ads and pics and boosted cell
-        // Jodel.JDLFeedPostMediaCellV2 seems to be replaced in favor of Jodel.JDLFeedPostMediaCell as of 7.57, same for Jodel.JDLPostDetailsPostMediaCellV2
         NSArray *bannedClasses = @[@"Jodel.AdColumnCell",
                                     @"Jodel.JDLFeedPostMediaCell",
                                     @"Jodel.MultiBoostCell",
@@ -339,52 +336,14 @@
 %hook UIColor
 + (UIColor *)colorNamed:(NSString *)name{
 
-    if ([name isEqualToString:@"mainColor"]){
-        return [UIColor systemBlueColor];
+    UIColor *color = [[JDESettingsManager sharedInstance].tweakSettings colorForKey:name];
+    if (!color){
+        return %orig;
     }
-    // User Section
-    else if ([name isEqualToString:@"meColor"]){
-        return [UIColor systemRedColor];
-    }
-    // Channel Section
-    else if ([name isEqualToString:@"channelColor"]){
-        return [UIColor systemGreenColor];
-    }
+    return color;
 
-    else if ([name isEqualToString:@"channelNotification"]){
-        return [UIColor systemRedColor];
-    }
-    else if ([name isEqualToString:@"notificationColor"]){
-        return [UIColor systemPurpleColor];
-    }
-    // poll cells color, make it transparent so u can see
-    else if ([name isEqualToString:@"pollBgColor"]){
-        return [UIColor systemYellowColor];
-    }
-    //Karma and some text
-    else if ([name isEqualToString:@"customLightGrayColor"]){
-        return [UIColor systemTealColor];
-    }
-    else{
-        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"ColorNamd: (%@)", name]];
-    }
-
-    return %orig;
 }
-
 %end
-
-// %hook JDLBasePostCellViewModel
-// - (void)setPostColor:(id)arg1{
-//     [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"postColor: (%@)", arg1]];
-// }
-// - (id)postColor{
-    
-//     [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"postColor: (%@)", %orig]];
-//     return [UIColor systemRedColor];
-// }
-
-// %end
 
 %ctor {
     %init(PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),

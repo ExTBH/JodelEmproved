@@ -35,7 +35,7 @@
     
     //Press detection
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-    lpgr.minimumPressDuration = 1;
+    lpgr.minimumPressDuration = .5;
     [_mapView addGestureRecognizer:lpgr];
     //add pin at 0, 0
     _pin = [MKPointAnnotation new];

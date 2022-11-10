@@ -2,20 +2,6 @@
 
 
 @implementation JDEButtons
-
--(UIButton*)boldButton{
-    //init
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
-    btn.translatesAutoresizingMaskIntoConstraints = NO;
-    //colors
-    [btn setTintColor:[UIColor whiteColor]];
-    //sizes
-
-    btn.titleLabel.font = [UIFont boldSystemFontOfSize:20];
-
-
-    return btn;
-}
 - (UIButton*)buttonWithImageNamed:(NSString*)image{
     //init
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];

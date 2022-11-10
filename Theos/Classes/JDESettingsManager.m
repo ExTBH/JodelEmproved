@@ -6,7 +6,6 @@
 #define suiteName "dev.extbh.jodelemproved"
 
 @interface JDESettingsManager()
-@property (strong, nonatomic) NSUserDefaults *tweakSettings;
 @property (strong, nonatomic) NSBundle *bundle;
 @property (strong, nonatomic, readwrite) NSString *logFile;
 @property (nonatomic, readwrite) BOOL logFileExists;
