@@ -35,7 +35,7 @@
     
     //Press detection
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-    lpgr.minimumPressDuration = 1;
+    lpgr.minimumPressDuration = .5;
     [_mapView addGestureRecognizer:lpgr];
     //add pin at 0, 0
     _pin = [MKPointAnnotation new];
@@ -46,7 +46,7 @@
     [_btn addTarget:self action:@selector(didTapSwitchButton:) forControlEvents:UIControlEventTouchUpInside];
     _btn.enabled = NO;
     _btn.translatesAutoresizingMaskIntoConstraints = NO;
-    _btn.backgroundColor = [UIColor colorWithRed: 0.98 green: 0.49 blue: 0.05 alpha: 1.00];
+    _btn.backgroundColor = [UIColor colorNamed:@"mainColor"];
     [_btn setTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"map_change_location_hint"]  forState:UIControlStateNormal];
     _btn.titleLabel.font = [UIFont boldSystemFontOfSize:15];
     _btn.tintColor = UIColor.labelColor;

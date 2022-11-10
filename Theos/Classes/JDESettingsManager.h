@@ -5,6 +5,7 @@
 #import <objc/runtime.h>
 
 @interface JDESettingsManager : NSObject
+@property (strong, nonatomic) NSUserDefaults *tweakSettings;
 @property (strong, nonatomic, readonly) NSString *logFile;
 @property (nonatomic, readonly) BOOL logFileExists;
 

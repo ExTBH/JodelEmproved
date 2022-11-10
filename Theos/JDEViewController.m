@@ -1,4 +1,7 @@
 #import "JDEViewController.h"
+#include <UIKit/UIColor.h>
+#include "Classes/ThemingViewController.h"
+#include <UIKit/UIImage.h>
 #import "Classes/JDELogsVC.h"
 
 // Private declarations; this class only.
@@ -29,12 +32,14 @@
                                                                         action:@selector(didTapLocationButton:)];
 }
 - (void)configureTableview{
-    self.JETableview = [[UITableView alloc] initWithFrame:CGRectNull style:UITableViewStyleGrouped];
+    self.JETableview = [[UITableView alloc] initWithFrame:CGRectNull style:UITableViewStyleInsetGrouped];
     self.JETableview.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.JETableview];
     self.JETableview.delegate = self;
     self.JETableview.dataSource = self;
     
+    self.JETableview.backgroundColor = UIColor.systemGroupedBackgroundColor;
+
     [NSLayoutConstraint activateConstraints:@[
         [self.JETableview.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
         [self.JETableview.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
@@ -57,9 +62,7 @@
     mapView.title = [_settingsManager localizedStringForKey:@"change_location"];
     [self.navigationController pushViewController:mapView animated:YES];
 }
-- (void)didTapInfo:(id)sender{
-    //TODO: - Implement Logic to show an Info view to explain
-}
+
 - (void)openLinkForIndexPath:(NSIndexPath*)indexPath{
     NSURL *url;
     switch(indexPath.row){
@@ -94,8 +97,8 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 2; }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(section == 0){ return 8;}
-    return 3;
+    if(section == 0){ return 7;}
+    return 4;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
@@ -116,7 +119,7 @@
     }    label.textColor = UIColor.secondaryLabelColor;
     
     [NSLayoutConstraint activateConstraints:@[
-        [label.leadingAnchor constraintEqualToAnchor:headerView.safeAreaLayoutGuide.leadingAnchor constant:20],
+        [label.leadingAnchor constraintEqualToAnchor:headerView.safeAreaLayoutGuide.leadingAnchor],
         [label.centerYAnchor constraintEqualToAnchor:headerView.safeAreaLayoutGuide.centerYAnchor]
     ]];
     
@@ -153,9 +156,9 @@
         label.lineBreakMode = NSLineBreakByWordWrapping;
 
         [NSLayoutConstraint activateConstraints:@[
-            [label.leftAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.leftAnchor constant:20],
+            [label.leftAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.leftAnchor],
             [label.centerYAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.centerYAnchor],
-            [label.rightAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.rightAnchor constant:20],
+            [label.rightAnchor constraintEqualToAnchor:footerView.safeAreaLayoutGuide.rightAnchor],
         ]];
         return  footerView;
     }
@@ -165,43 +168,36 @@
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"settingsCell"];
-    cell.backgroundColor = UIColor.clearColor;
     NSMutableArray<NSLayoutConstraint *> *consts = [NSMutableArray new];
     NSDictionary *infoDict = [_settingsManager cellInfoForPath:indexPath];
 
     //Cell Icon
     cell.imageView.image = infoDict[@"image"];
-    cell.imageView.tintColor = [UIColor colorWithRed: 0.98 green: 0.49 blue: 0.05 alpha: 1.00];
+    cell.imageView.tintColor = [UIColor colorNamed:@"mainColor"];
     //Cell Label
     cell.textLabel.text = infoDict[@"title"];
     // hiding views for section 2
     if(indexPath.section == 0){
-        //Info Button
-        UIButton *info = [UIButton systemButtonWithImage:[UIImage systemImageNamed:@"info.circle"] target:self action:@selector(didTapInfo:)];
-        info.translatesAutoresizingMaskIntoConstraints = NO;
-        //Info Button constraints
-        [consts addObject:[info.centerYAnchor constraintEqualToAnchor:cell.centerYAnchor]];
-        [consts addObject:[info.trailingAnchor constraintEqualToAnchor:cell.trailingAnchor constant:-20]];
 
         //Switch Button
         UISwitch *switchView = [UISwitch new];
-        switchView.translatesAutoresizingMaskIntoConstraints = NO;
+        switchView.onTintColor = [UIColor colorNamed:@"mainColor"];
         [switchView addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
-        [consts addObject:[switchView.centerYAnchor constraintEqualToAnchor:cell.centerYAnchor]];
-        [consts addObject:[switchView.trailingAnchor constraintEqualToAnchor:info.leadingAnchor constant:-10]];
         switchView.tag = indexPath.row;
         [switchView setOn:[_settingsManager featureStateForTag:indexPath.row] animated:NO];
 
-        //Adding Content views
-        [cell.contentView addSubview:info];
-        [cell.contentView addSubview:switchView];
+        cell.accessoryView = switchView;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     } else{
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        if(indexPath.section == 1 && indexPath.row != 2){
+        if(indexPath.row == 0 || indexPath.row == 1){
             UIImage *icon = [UIImage resizeImageFromImage:infoDict[@"image"] withSize:CGSizeMake(25, 25)];
             cell.imageView.image = icon;
+        }
+        else if (indexPath.row == 3) {
+            cell.imageView.image = [UIImage systemImageNamed:@"scribble"];
+            cell.textLabel.text = @"Theming";
         }
     }
 
@@ -216,12 +212,19 @@
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 1){
-        [self openLinkForIndexPath:indexPath];
+        if (indexPath.row == 2){
+            JDELogsVC *logsVC = [JDELogsVC new];
+            [self.navigationController pushViewController:logsVC animated:YES];
+        }
+        else if (indexPath.row == 3) {
+            ThemingViewController *themeVC = [ThemingViewController new];
+            [self.navigationController pushViewController:themeVC animated:YES];
+        }
+        else {
+            [self openLinkForIndexPath:indexPath];
+        }
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    }
-    if(indexPath.section == 1 && indexPath.row == 2){
-        JDELogsVC *logsVC = [JDELogsVC new];
-        [self.navigationController pushViewController:logsVC animated:YES];
+        
     }
 }
 
@@ -259,12 +262,14 @@
             [suggestedActions addObject:location];
         }
     }
-    if(indexPath.section == 1){
+    if(indexPath.section == 1 && indexPath.row < 2){
         UIAction *openLink = [UIAction actionWithTitle:[_settingsManager localizedStringForKey:@"link"] image:[UIImage systemImageNamed:@"link"] identifier:nil handler:^(UIAction *handler) {
                 [self openLinkForIndexPath:indexPath];
             }];
         [suggestedActions addObject:openLink];
-
+    }
+    else {
+        return nil;
     }
     UIMenu *menu = [UIMenu menuWithTitle:@"" children:suggestedActions];
     UIContextMenuConfiguration *menuConfig = [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil actionProvider:^(NSArray *suggestedActions) { return menu;}

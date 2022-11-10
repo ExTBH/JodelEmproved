@@ -1,9 +1,11 @@
 #import "JDESettingsManager.h"
+#include <Foundation/NSString.h>
+#include <Foundation/NSObjCRuntime.h>
+#include <UIKit/UIColor.h>
 
 #define suiteName "dev.extbh.jodelemproved"
 
 @interface JDESettingsManager()
-@property (strong, nonatomic) NSUserDefaults *tweakSettings;
 @property (strong, nonatomic) NSBundle *bundle;
 @property (strong, nonatomic, readwrite) NSString *logFile;
 @property (nonatomic, readwrite) BOOL logFileExists;
@@ -82,13 +84,6 @@
                         @"title": [self localizedStringForKey:@"screenshot_protection"],
                         @"desc": [self localizedStringForKey:@"screenshot_protection_desc"],
                         @"image": [UIImage systemImageNamed:@"bell.slash"]
-                    }; break;
-                case 7:
-                    info = @{
-                        @"title": [self localizedStringForKey:@"tracking_protection"],
-                        @"desc": [self localizedStringForKey:@"tracking_protection_desc"],
-                        @"image": [UIImage systemImageNamed:@"person.crop.circle.badge.xmark"],
-                        @"disabled": @1
                     }; break;
             }
             break;

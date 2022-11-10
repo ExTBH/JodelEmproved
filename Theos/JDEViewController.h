@@ -3,6 +3,7 @@
 #import "Classes/JDESettingsManager.h"
 #import "Classes/JDEMapView.h"
 #import "Classes/Exts.h"
+#import "Classes/ThemingViewController.h"
 
 
 @interface JDEViewController : UIViewController
