@@ -25,6 +25,24 @@ UIColor *colorForKey(NSString *key){
     return color;
 }
 
+// https://stackoverflow.com/a/7323029/16619237
+NSString *splitStringByUpperCase(NSString *str){
+
+    int index = 1;
+    NSMutableString* mutableInputString = [NSMutableString stringWithString:str];
+
+    while (index < mutableInputString.length) {
+
+        if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[mutableInputString characterAtIndex:index]]) {
+            [mutableInputString insertString:@" " atIndex:index];
+            index++;
+        }
+        index++;
+    }
+
+    return [NSString stringWithString:mutableInputString];
+}
+
 
 @interface ColorCell()
 @end
@@ -69,7 +87,7 @@ UIColor *colorForKey(NSString *key){
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-    label.text = @"Unavailable for below iOS 13 :)";
+    label.text = @"Unavailable for below iOS 14 :)";
     label.textColor = UIColor.secondaryLabelColor;
     return label;
 }
@@ -97,9 +115,11 @@ UIColor *colorForKey(NSString *key){
     }
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    NSString *key = _ThemeOptionKeysDict()[@(indexPath.row)];
-    cell.textLabel.text = key;
-    cell.colorButton.backgroundColor = colorForKey(key);
+    NSString *rawKey = _ThemeOptionKeysDict()[@(indexPath.row)];
+    NSString *formattedKey = [rawKey stringByReplacingOccurrencesOfString:@"Color" withString:@""];
+    formattedKey = splitStringByUpperCase(formattedKey);
+    cell.textLabel.text = formattedKey;
+    cell.colorButton.backgroundColor = colorForKey(rawKey);
     [cell.colorButton addTarget:self action:@selector(tappedColor:) forControlEvents:UIControlEventTouchUpInside];
 
 
