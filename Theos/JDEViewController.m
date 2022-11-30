@@ -97,7 +97,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 2; }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(section == 0){ return 7;}
+    if(section == 0){ return 8;}
     return 4;
 }
 
@@ -194,10 +194,6 @@
         if(indexPath.row == 0 || indexPath.row == 1){
             UIImage *icon = [UIImage resizeImageFromImage:infoDict[@"image"] withSize:CGSizeMake(25, 25)];
             cell.imageView.image = icon;
-        }
-        else if (indexPath.row == 3) {
-            cell.imageView.image = [UIImage systemImageNamed:@"scribble"];
-            cell.textLabel.text = @"Theming";
         }
     }
 

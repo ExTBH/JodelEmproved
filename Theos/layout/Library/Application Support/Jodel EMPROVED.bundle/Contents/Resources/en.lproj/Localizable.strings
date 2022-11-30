@@ -29,16 +29,12 @@
 "confirm_replies" = "Confirm Replies";
 "screenshot_protection" = "Screenshot Protection";
 "tracking_protection" = "Tracking Protection";
+"detect_links" = "Detect Links in text";
 
 ///More Section
 "source_code" = "Source Code";
 "twitter" = "ExTBH";
 "logs" = "Tweak Logs";
-
-//Settings description
-"copy_paste_desc" = "Activates by long press, needs restart for changes";
-"screenshot_protection_desc" = "Takes screenshot without anyone knowing";
-"tracking_protection_desc" = "No more tracking";
 
 //Confirm Alerts
 "confirm_reply_title" = "Confirm Reply";

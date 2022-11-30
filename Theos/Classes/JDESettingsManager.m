@@ -82,8 +82,12 @@
                 case 6:
                     info = @{
                         @"title": [self localizedStringForKey:@"screenshot_protection"],
-                        @"desc": [self localizedStringForKey:@"screenshot_protection_desc"],
                         @"image": [UIImage systemImageNamed:@"bell.slash"]
+                    }; break;
+                case 7:
+                    info = @{
+                        @"title": [self localizedStringForKey:@"detect_links"],
+                        @"image": [UIImage systemImageNamed:@"link"]
                     }; break;
             }
             break;
@@ -104,6 +108,11 @@
                     info = @{
                         @"title": [self localizedStringForKey:@"logs"],
                         @"image": [UIImage systemImageNamed:@"doc.text"]
+                    }; break;
+                case 3:
+                    info = @{
+                        @"title": @"Theming",
+                        @"image": [UIImage systemImageNamed:@"scribble"]
                     }; break;
             }
     }

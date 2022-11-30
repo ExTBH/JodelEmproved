@@ -3,6 +3,8 @@
 #import <PhotosUI/PhotosUI.h>
 #import "JDEViewController.h"
 #import "Headers/AppHaptic.h"
+#import "Headers/ZSWTappableLabel.h"
+#import <SafariServices/SafariServices.h>
 
 @interface PictureFeedViewController : UIViewController
 @property (weak, nonatomic, readwrite) UIButton *addReactionButton;
@@ -25,7 +27,8 @@
 @interface JDLFeedTableViewSource <UITableViewDataSource, UITableViewDelegate> //Its both delegate and dataSource. BLKFlexibleHeightBar forwards calls to it
 @end
 
-@interface JDLPostDetailsPostCellV2 : UITableViewCell
+@interface JDLPostDetailsPostCell : UITableViewCell
+
 - (id)contentLabel;
 - (void)setContentLabel:(id)contentLabel;
 @end
@@ -44,4 +47,9 @@
 - (void)downvoteTap:(id)sender;
 - (void)upvoteTap:(id)sender;
 - (UIViewController *) firstAvailableUIViewController:(UIView*)view; //Getting the VC to show an alert
+@end
+
+@interface TappableLabel : UILabel
+@end
+@interface FeedCellTappableLabelDelegate : NSObject <ZSWTappableLabelTapDelegate>
 @end

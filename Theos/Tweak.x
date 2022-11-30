@@ -310,7 +310,7 @@
                                                         //Copying for sub posts
                                                         else if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCell"]){
                                                             //Change cell type to access methods interfaced methods
-                                                            JDLPostDetailsPostCellV2 *cell = [tableView cellForRowAtIndexPath:indexPath];
+                                                            JDLPostDetailsPostCell *cell = [tableView cellForRowAtIndexPath:indexPath];
                                                             UIPasteboard.generalPasteboard.string = [[cell contentLabel] text];
                                                             [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
                                                         }
@@ -329,8 +329,46 @@
 }
 %end
 
+%hook TappableLabel
+-(void)setAttributedText:(NSAttributedString *)arg1{
+    NSMutableAttributedString *newAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:arg1];
+    if([[JDESettingsManager sharedInstance] featureStateForTag:7]){
+        NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
+        [detector enumerateMatchesInString:arg1.string options:0 range:NSMakeRange(0, arg1.string.length) 
+            usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+                attributes[ZSWTappableLabelTappableRegionAttributeName] = @YES;
+                attributes[ZSWTappableLabelHighlightedBackgroundAttributeName] = UIColor.lightGrayColor;
+                attributes[ZSWTappableLabelHighlightedForegroundAttributeName] = UIColor.whiteColor;
+                attributes[NSUnderlineStyleAttributeName] = @(NSUnderlineStyleSingle);
+                attributes[@"NSTextCheckingResult"] = result;
+                [newAttributedString addAttributes:attributes range:result.range];
+            }];
+    }
+
+    %orig(newAttributedString);
+
+}
+%end
+
+%hook FeedCellTappableLabelDelegate
+- (void)tappableLabel:(ZSWTappableLabel *)tappableLabel tappedAtIndex:(NSInteger)idx withAttributes:(NSDictionary<NSAttributedStringKey, id> *)attributes{
+    if([[JDESettingsManager sharedInstance] featureStateForTag:7]){
+        NSTextCheckingResult *result = attributes[@"NSTextCheckingResult"];
+        if(result.resultType == NSTextCheckingTypeLink){
+            UIViewController *presentationController = [tappableLabel firstAvailableUIViewController];
+            if (presentationController != nil){
+                SFSafariViewController *inApp = [[SFSafariViewController alloc] initWithURL:result.URL];
+                [presentationController presentViewController:inApp animated:YES completion:nil];
+            }
+        }
+    }
+    %orig;
+}
+%end
+
 //DON'T DELETE WILL BREAK ABOVE METHOD
-%hook JDLPostDetailsPostCellV2
+%hook JDLPostDetailsPostCell
 %end
 
 %hook UIColor
@@ -350,10 +388,12 @@
     PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
     ScreenshotService=objc_getClass("Jodel.ScreenshotService"),
     FeedCellVoteView=objc_getClass("Jodel.JDLFeedCellVoteView"),
-    JDLPostDetailsPostCellV2=objc_getClass("Jodel.JDLPostDetailsPostCellV2"),
+    JDLPostDetailsPostCell=objc_getClass("Jodel.JDLPostDetailsPostCell"),
     ChatboxViewController=objc_getClass("Jodel.ChatboxViewController"),
     JDLFeedTableViewSource=objc_getClass("Jodel.JDLFeedTableViewSource"),
     MainFeedViewController=objc_getClass("Jodel.MainFeedViewController"),
-    ImageCaptureViewController=objc_getClass("Jodel.ImageCaptureViewController"));
+    ImageCaptureViewController=objc_getClass("Jodel.ImageCaptureViewController"),
+    TappableLabel=objc_getClass("Jodel.TappableLabel"),
+    FeedCellTappableLabelDelegate=objc_getClass("Jodel.FeedCellTappableLabelDelegate"));
 }
 
