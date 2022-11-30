@@ -29,16 +29,12 @@
 "confirm_replies" = "تأكيد الردود";
 "screenshot_protection" = "حماية تصوير الشاشة";
 "tracking_protection" = "حماية التتبع";
+"detect_links" = "فتح الروابط";
 
 ///More Section
 "source_code" = "السورس كود";
 "twitter" = "ExTBH";
 "logs" = "لوقات الاداه";
-
-//Settings description
-"copy_paste_desc" = "تتفعل بالضفط المطول, تحتاج إلى ريستارت للتغيير";
-"screenshot_protection_desc" = "أخذ صور للشاشة بدون تنبيه";
-"tracking_protection_desc" = "إيقاف التتبع للخصوصية";
 
 //Confirm Alerts
 "confirm_reply_title" = "تأكيد الرد";

@@ -9,3 +9,7 @@
 - (void)setColor:(UIColor*)color forKey:(NSString*)key;
 - (UIColor*)colorForKey:(NSString*)key;
 @end
+
+@interface UIView (FindUIViewController)
+- (UIViewController *) firstAvailableUIViewController;
+@end
