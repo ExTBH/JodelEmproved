@@ -383,6 +383,80 @@
 }
 %end
 
+%hook WalkthroughViewController
+- (void)viewDidLayoutSubviews{
+    %orig;
+
+    ShrinkAnimationButton *targetButton = nil;
+    Class trgtClass = objc_getClass("Jodel.ShrinkAnimationButton");
+
+    for(id view in [self view].subviews){
+        if([view isKindOfClass:[trgtClass class]]){
+            targetButton = view;
+            break;
+        }
+    }
+}
+
+-(void)didTapNext{
+    UIAlertController *accAlert = [UIAlertController alertControllerWithTitle:nil 
+        message:nil 
+        preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" 
+        style:UIAlertActionStyleCancel 
+        handler:nil];
+
+    UIAlertAction *withToken = [UIAlertAction actionWithTitle:@"Use Token" 
+        style:UIAlertActionStyleDefault 
+        handler:^(UIAlertAction  *action){
+            [self showTokenAlertWithCompletion:^(){
+                %orig;
+            }];
+        }];
+
+    UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"Use Default" 
+        style:UIAlertActionStyleDefault 
+        handler:^(UIAlertAction  *action){
+            %orig;
+        }];
+
+    [accAlert addAction:cancelAction];
+    [accAlert addAction:withToken];
+    [accAlert addAction:defaultAction];
+    [self presentViewController:accAlert animated:YES completion:nil];
+}
+%new
+- (void)showTokenAlertWithCompletion:(void (^)())completion{
+    UIAlertController *tokenAlert = [UIAlertController alertControllerWithTitle:nil 
+        message:@"Use Token"
+        preferredStyle:UIAlertControllerStyleAlert];
+
+    [tokenAlert addTextFieldWithConfigurationHandler:^(UITextField *textField){
+        textField.placeholder = @"UUID key here";
+    }];
+
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" 
+        style:UIAlertActionStyleCancel 
+        handler:nil];
+
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Ok" 
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction *alertAction){
+            [[NSUserDefaults standardUserDefaults] setObject:[tokenAlert.textFields firstObject].text forKey:@"fc_uuidForDevice"];
+            completion();
+        }];
+    [tokenAlert addAction:cancelAction];
+    [tokenAlert addAction:okAction];
+    
+    [self presentViewController:tokenAlert animated:YES completion:nil];
+
+}
+
+%end
+
+%hook ShrinkAnimationButton
+%end
 %ctor {
     %init(PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
     PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
@@ -394,6 +468,8 @@
     MainFeedViewController=objc_getClass("Jodel.MainFeedViewController"),
     ImageCaptureViewController=objc_getClass("Jodel.ImageCaptureViewController"),
     TappableLabel=objc_getClass("Jodel.TappableLabel"),
-    FeedCellTappableLabelDelegate=objc_getClass("Jodel.FeedCellTappableLabelDelegate"));
+    FeedCellTappableLabelDelegate=objc_getClass("Jodel.FeedCellTappableLabelDelegate"),
+    WalkthroughViewController=objc_getClass("Jodel.WalkthroughViewController"),
+    ShrinkAnimationButton=objc_getClass("Jodel.ShrinkAnimationButton"));
 }
 

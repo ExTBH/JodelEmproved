@@ -1,8 +1,5 @@
 #import "JDEViewController.h"
-#include <UIKit/UIColor.h>
-#include "Classes/ThemingViewController.h"
-#include <UIKit/UIImage.h>
-#import "Classes/JDELogsVC.h"
+
 
 // Private declarations; this class only.
 @interface JDEViewController()  <UITableViewDelegate, UITableViewDataSource>
@@ -94,11 +91,90 @@
             }
     }
 }
+
+- (void)wipeAppData{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController *progress = [UIAlertController alertControllerWithTitle:@"WIPING DATA" 
+            message:nil 
+            preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:progress animated:YES completion:nil];
+
+
+
+        NSFileManager *manager = [NSFileManager defaultManager];
+
+        NSSet<NSString*>* setOfDirsToClean = [NSSet setWithObjects:@"~/Documents", @"~/tmp", @"~/Library", @"~/Library/Caches", nil];
+
+        NSMutableSet<NSString*> *DirsToIgnore = [NSMutableSet setWithCapacity:2];
+        for(NSString *dir in @[@"~/Library/Caches", @"~/Library/SyncedPreferences", @"~/Library/Preferences", @"~/StoreKit"]){
+            [DirsToIgnore addObject:[dir stringByExpandingTildeInPath]];
+        }
+
+
+        for(NSString *dirToClean in setOfDirsToClean){
+            progress.title = [NSString stringWithFormat:@"Cleaning %@", dirToClean];
+
+            NSError *err = nil;
+            NSString *expandedDir = [dirToClean stringByExpandingTildeInPath];
+
+            NSArray<NSString*> *expandedDirContent = [[manager contentsOfDirectoryAtPath:expandedDir error:&err] 
+                arrayByPrePendingPathComponent:expandedDir];
+            if(err != nil){
+                progress.title = err.debugDescription;
+                return;
+            }
+            
+            NSError *removeError = [manager removeItemsAtPaths:expandedDirContent withBlacklist:DirsToIgnore];
+            if(removeError != nil){
+                progress.title = removeError.debugDescription;
+                return;
+            }
+        }
+
+        progress.title = @"Cleaning Preferences";
+        NSError *prefsError = nil;
+        NSString *expandedPrefsDir = [@"~/Library/Preferences" stringByExpandingTildeInPath];
+        NSArray<NSString*> *prefsArr = [[manager contentsOfDirectoryAtPath:expandedPrefsDir error:&prefsError] 
+            arrayByPrePendingPathComponent:expandedPrefsDir];
+
+        if(prefsError != nil){
+            progress.title = prefsError.debugDescription;
+            return;
+        }
+
+        for(NSString *prefName in prefsArr){
+            [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:prefName];
+        }
+
+        NSDictionary<NSString*, id> *icloudPrefs = [NSUbiquitousKeyValueStore.defaultStore dictionaryRepresentation];
+
+        for(NSString *key in [icloudPrefs allKeys]){
+            [NSUbiquitousKeyValueStore.defaultStore removeObjectForKey:key];
+        }
+        [NSUbiquitousKeyValueStore.defaultStore synchronize];
+
+
+        progress.title = @"Wiping Keychain";
+        Class UICKeyChainStore = NSClassFromString(@"UICKeyChainStore");
+        [UICKeyChainStore removeAllItems];
+
+        Class JDLOAuthHandler = NSClassFromString(@"JDLOAuthHandler");
+        if(![JDLOAuthHandler clearCredentialsFromKeychain]){
+            progress.title = @"Failed to wipe keychain";
+            return;
+        }
+
+        [self dismissViewControllerAnimated:progress completion:nil];
+        exit(1);
+    });
+    
+    
+}
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 2; }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section == 0){ return 8;}
-    return 4;
+    return 5;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
@@ -215,6 +291,38 @@
         else if (indexPath.row == 3) {
             ThemingViewController *themeVC = [ThemingViewController new];
             [self.navigationController pushViewController:themeVC animated:YES];
+        }
+        else if (indexPath.row == 4) {
+            NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"fc_uuidForDevice"];
+            if (uuid == nil){
+                uuid = @"NOT FOUND";
+            }
+
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil 
+                message:nil 
+                preferredStyle:UIAlertControllerStyleActionSheet];
+
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" 
+                style:UIAlertActionStyleCancel 
+                handler:nil];
+            
+            UIAlertAction *wipeAccount = [UIAlertAction actionWithTitle:@"WIPE ACCOUNT" 
+                style:UIAlertActionStyleDestructive
+                handler:^(UIAlertAction *action){
+                    [self wipeAppData];
+                }];
+
+            UIAlertAction *copyUUID = [UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Copy: %@", uuid] 
+                style:UIAlertActionStyleDefault
+                handler:^(UIAlertAction *action){
+                    UIPasteboard.generalPasteboard.string = uuid;
+                }];
+
+            [alert addAction:cancelAction];
+            [alert addAction:wipeAccount];
+            [alert addAction:copyUUID];
+            [self presentViewController:alert animated:YES completion:nil];
+        
         }
         else {
             [self openLinkForIndexPath:indexPath];

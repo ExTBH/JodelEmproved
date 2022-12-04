@@ -1,4 +1,7 @@
 #import "Exts.h"
+#include "Classes/JDESettingsManager.h"
+#include <Foundation/NSError.h>
+#include <Foundation/Foundation.h>
 #include <UIKit/UIColor.h>
 #include <Foundation/NSKeyedArchiver.h>
 
@@ -55,6 +58,47 @@
         responder = [responder nextResponder];
     }
     return nil;
+}
+
+@end
+
+@implementation NSFileManager (Batch)
+- (NSError*)removeItemsAtPaths:(NSArray<NSString*>*)paths withBlacklist:(NSSet<NSString*>*)blacklist{
+    NSError *err = nil;
+    for(NSString *path in paths){
+        if([path pathPartOfPaths:blacklist] == NO){
+            [self removeItemAtPath:path error:&err];
+        }
+        if(err != nil){
+            return err;
+        }
+    }
+
+
+    return nil;
+}
+
+@end
+
+@implementation NSArray (Paths)
+- (NSArray<NSString *> *)arrayByPrePendingPathComponent:(NSString *)component {
+    NSMutableArray *arr = [NSMutableArray new];
+    for(NSString *arrItem in self){
+        [arr addObject:[component stringByAppendingPathComponent:arrItem]];
+    }
+    return arr;
+}
+
+@end
+
+@implementation NSString (Paths)
+- (BOOL)pathPartOfPaths:(NSSet<NSString*>*)paths{
+    for (NSString *path in paths){
+        if([self isEqualToString:path]){
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end
