@@ -333,8 +333,8 @@
 -(void)setAttributedText:(NSAttributedString *)arg1{
     NSMutableAttributedString *newAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:arg1];
     if([[JDESettingsManager sharedInstance] featureStateForTag:7]){
-        NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
-        [detector enumerateMatchesInString:arg1.string options:0 range:NSMakeRange(0, arg1.string.length) 
+        
+        [[NSDataDetector sharedInstance] enumerateMatchesInString:arg1.string options:0 range:NSMakeRange(0, arg1.string.length) 
             usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
                 NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
                 attributes[ZSWTappableLabelTappableRegionAttributeName] = @YES;
@@ -355,11 +355,33 @@
 - (void)tappableLabel:(ZSWTappableLabel *)tappableLabel tappedAtIndex:(NSInteger)idx withAttributes:(NSDictionary<NSAttributedStringKey, id> *)attributes{
     if([[JDESettingsManager sharedInstance] featureStateForTag:7]){
         NSTextCheckingResult *result = attributes[@"NSTextCheckingResult"];
-        if(result.resultType == NSTextCheckingTypeLink){
-            UIViewController *presentationController = [tappableLabel firstAvailableUIViewController];
-            if (presentationController != nil){
-                SFSafariViewController *inApp = [[SFSafariViewController alloc] initWithURL:result.URL];
-                [presentationController presentViewController:inApp animated:YES completion:nil];
+        UIViewController *presentationController = [tappableLabel firstAvailableUIViewController];
+        if (result){
+            switch(result.resultType){
+                case NSTextCheckingTypeLink:{
+                        SFSafariViewController *inApp = [[SFSafariViewController alloc] initWithURL:result.URL];
+                        [presentationController presentViewController:inApp animated:YES completion:nil];
+                    }
+                    break;
+                case NSTextCheckingTypePhoneNumber:{
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Open with" 
+                        message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+                    
+                    UIAlertAction *cancelAlert = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+                    UIAlertAction *whatsappAlert = [UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Whatsapp: %@", result.phoneNumber] 
+                        style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                            NSURL *whatsappURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wa.me/%@", result.phoneNumber]];
+                            [UIApplication.sharedApplication openURL:whatsappURL options:@{} completionHandler:nil];
+                        }];
+
+                    [alert addAction:cancelAlert];
+                    [alert addAction:whatsappAlert];
+                    [presentationController presentViewController:alert animated:YES completion:nil];
+                }
+                    break;
+                default:
+                    break;
             }
         }
     }

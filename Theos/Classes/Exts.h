@@ -18,6 +18,10 @@
 - (UIViewController *) firstAvailableUIViewController;
 @end
 
+@interface NSDataDetector (Shared)
++ (NSDataDetector*)sharedInstance;
+@end
+
 @interface NSFileManager (Batch)
 - (NSError*)removeItemsAtPaths:(NSArray<NSString*>*)paths withBlacklist:(NSSet<NSString*>*)blacklist;
 @end
