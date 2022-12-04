@@ -1,7 +1,5 @@
 #import "Exts.h"
 #include <UIKit/UIColor.h>
-#include <Foundation/NSKeyedArchiver.h>
-
 @implementation UIImage (Scale)
 // Resize images by luki120 @ Theos discord
 + (UIImage *)resizeImageFromImage:(UIImage *)image withSize:(CGSize)size {
@@ -55,6 +53,20 @@
         responder = [responder nextResponder];
     }
     return nil;
+}
+
+@end
+
+@implementation NSDataDetector (Shared)
++ (NSDataDetector *)sharedInstance {
+    static NSDataDetector *shared = nil;
+    static dispatch_once_t onceToken;
+
+    dispatch_once(&onceToken, ^{
+        shared = [self dataDetectorWithTypes:NSTextCheckingTypeLink|NSTextCheckingTypePhoneNumber error:nil];
+        });
+    return shared;
+
 }
 
 @end

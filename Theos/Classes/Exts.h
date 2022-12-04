@@ -13,3 +13,7 @@
 @interface UIView (FindUIViewController)
 - (UIViewController *) firstAvailableUIViewController;
 @end
+
+@interface NSDataDetector (Shared)
++ (NSDataDetector*)sharedInstance;
+@end
