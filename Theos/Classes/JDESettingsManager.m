@@ -114,6 +114,11 @@
                         @"title": @"Theming",
                         @"image": [UIImage systemImageNamed:@"scribble"]
                     }; break;
+                case 4:
+                    info = @{
+                        @"title": @"UUID",
+                        @"image": [UIImage systemImageNamed:@"person.crop.circle"]
+                    }; break;
             }
     }
     return info;
