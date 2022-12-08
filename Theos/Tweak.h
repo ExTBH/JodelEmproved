@@ -52,5 +52,3 @@
 
 @interface TappableLabel : UILabel
 @end
-@interface FeedCellTappableLabelDelegate : NSObject <ZSWTappableLabelTapDelegate>
-@end
