@@ -21,7 +21,7 @@
                                                             UINavigationControllerDelegate>
 - (void)JDEuploadImage:(id)sender;
 - (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results;
-- (void)captureManagerStillImageCaptured:(id)iDontReallyKnow image:(id)aImage;
+- (void)captureManagerStillImageCaptured:(id)JDLAVCamCaptureManager_instance image:(id)aImage;
 - (void)loadImage:(UIImage*)image;
 
 @end
