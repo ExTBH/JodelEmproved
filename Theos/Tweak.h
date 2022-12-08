@@ -6,7 +6,6 @@
 #import "Headers/ZSWTappableLabel.h"
 #import <SafariServices/SafariServices.h>
 #import "Headers/WalkthroughViewController.h"
-#import "Headers/ShrinkAnimationButton.h"
 
 @interface PictureFeedViewController : UIViewController
 @property (weak, nonatomic, readwrite) UIButton *addReactionButton;
@@ -21,7 +20,7 @@
                                                             UINavigationControllerDelegate>
 - (void)JDEuploadImage:(id)sender;
 - (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results;
-- (void)captureManagerStillImageCaptured:(id)iDontReallyKnow image:(id)aImage;
+- (void)captureManagerStillImageCaptured:(id)JDLAVCamCaptureManager_instance image:(id)aImage;
 - (void)loadImage:(UIImage*)image;
 
 @end
@@ -52,6 +51,4 @@
 @end
 
 @interface TappableLabel : UILabel
-@end
-@interface FeedCellTappableLabelDelegate : NSObject <ZSWTappableLabelTapDelegate>
 @end

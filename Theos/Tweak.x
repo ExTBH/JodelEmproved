@@ -169,16 +169,9 @@
 - (void)loadImage:(UIImage*)image{
     [[JDESettingsManager sharedInstance] logString:@"Loading selected image"];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self captureManagerStillImageCaptured:self image:image];
+        // JDLAVCamCaptureManager is the captureManager iVar but its swift not hook-able
+        [self captureManagerStillImageCaptured:[NSClassFromString(@"JDLAVCamCaptureManager") new] image:image];
     });
-}
-
-// Required as of 7.59 because the app checks the method from protocol [JDLAVCamCaptureManager isFrontCamera], delegate is self
-// Improve the hook later
-// Side effects, Captured photos wont get flipped 
-%new
-- (BOOL)isFrontCamera{
-    return NO;
 }
 %end
 
@@ -406,20 +399,6 @@
 %end
 
 %hook WalkthroughViewController
-- (void)viewDidLayoutSubviews{
-    %orig;
-
-    ShrinkAnimationButton *targetButton = nil;
-    Class trgtClass = objc_getClass("Jodel.ShrinkAnimationButton");
-
-    for(id view in [self view].subviews){
-        if([view isKindOfClass:[trgtClass class]]){
-            targetButton = view;
-            break;
-        }
-    }
-}
-
 -(void)didTapNext{
     UIAlertController *accAlert = [UIAlertController alertControllerWithTitle:nil 
         message:nil 
@@ -477,8 +456,6 @@
 
 %end
 
-%hook ShrinkAnimationButton
-%end
 %ctor {
     %init(PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
     PictureFeedViewController=objc_getClass("Jodel.PictureFeedViewController"),
@@ -491,7 +468,6 @@
     ImageCaptureViewController=objc_getClass("Jodel.ImageCaptureViewController"),
     TappableLabel=objc_getClass("Jodel.TappableLabel"),
     FeedCellTappableLabelDelegate=objc_getClass("Jodel.FeedCellTappableLabelDelegate"),
-    WalkthroughViewController=objc_getClass("Jodel.WalkthroughViewController"),
-    ShrinkAnimationButton=objc_getClass("Jodel.ShrinkAnimationButton"));
+    WalkthroughViewController=objc_getClass("Jodel.WalkthroughViewController"));
 }
 
