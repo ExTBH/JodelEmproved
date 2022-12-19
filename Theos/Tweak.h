@@ -6,6 +6,7 @@
 #import "Headers/ZSWTappableLabel.h"
 #import <SafariServices/SafariServices.h>
 #import "Headers/WalkthroughViewController.h"
+#import "Classes/Exts.h"
 
 @interface PictureFeedViewController : UIViewController
 @property (weak, nonatomic, readwrite) UIButton *addReactionButton;

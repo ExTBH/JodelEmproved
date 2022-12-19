@@ -398,6 +398,7 @@
 }
 %end
 
+// UUID Log in for bans
 %hook WalkthroughViewController
 -(void)didTapNext{
     UIAlertController *accAlert = [UIAlertController alertControllerWithTitle:nil 
@@ -453,8 +454,54 @@
     [self presentViewController:tokenAlert animated:YES completion:nil];
 
 }
-
 %end
+
+#pragma mark - Post Replies Search
+@interface PostDetailsViewController : UIViewController
+@property (nonatomic, weak, readwrite) UITableView *tableView;
+@end
+
+
+%hook PostDetailsViewController
+- (void)viewDidLoad{
+    %orig;
+    PostDetailsViewController *usableSelf = self;
+    UIStackView *buttonsStack = (UIStackView*)usableSelf.navigationItem.rightBarButtonItem.customView;
+    #pragma mark add button
+    UIView *searchButtonView = [UIView new];
+    [searchButtonView.widthAnchor constraintEqualToConstant:30].active = YES;
+    [searchButtonView.heightAnchor constraintEqualToConstant:30].active = YES;
+    searchButtonView.backgroundColor = UIColor.tertiarySystemFillColor;
+    searchButtonView.layer.masksToBounds = YES;
+    searchButtonView.layer.cornerRadius = 15;
+
+    UIImageSymbolConfiguration *imageConfig = [UIImageSymbolConfiguration configurationWithPointSize:13 weight:UIImageSymbolWeightHeavy];
+    UIImage *searchImage = [[UIImage systemImageNamed:@"magnifyingglass"] imageWithConfiguration:imageConfig];
+
+    UIButton *searchButton = [UIButton systemButtonWithImage:searchImage target:self action:@selector(tappedSearch)];
+    searchButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [searchButtonView addSubview:searchButton];
+    [searchButton.centerXAnchor constraintEqualToAnchor:searchButtonView.centerXAnchor].active = YES;
+    [searchButton.centerYAnchor constraintEqualToAnchor:searchButtonView.centerYAnchor].active = YES;
+
+    [buttonsStack insertArrangedSubview:searchButtonView atIndex:0];
+    usableSelf.navigationItem.rightBarButtonItem.customView = buttonsStack;
+}
+%new
+- (void)tappedSearch{
+    NSIndexPath *indexPath = [NSIndexPath new];
+    indexPath = [NSIndexPath indexPathForRow:5124 inSection:0];
+    [[self tableView] scrollToRowAtIndexPath:indexPath
+        atScrollPosition:UITableViewScrollPositionNone
+        animated:YES];
+
+}
+- (void)bindViewModel:(id)viewModel{
+    [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Binding viewMode: %@", viewModel]];
+    %orig;
+}
+%end
+
 
 %ctor {
     %init(PlaceholderTextView=objc_getClass("Jodel.PlaceholderTextView"),
@@ -468,6 +515,7 @@
     ImageCaptureViewController=objc_getClass("Jodel.ImageCaptureViewController"),
     TappableLabel=objc_getClass("Jodel.TappableLabel"),
     FeedCellTappableLabelDelegate=objc_getClass("Jodel.FeedCellTappableLabelDelegate"),
-    WalkthroughViewController=objc_getClass("Jodel.WalkthroughViewController"));
+    WalkthroughViewController=objc_getClass("Jodel.WalkthroughViewController"),
+    PostDetailsViewController=objc_getClass("Jodel.PostDetailsViewController"));
 }
 
