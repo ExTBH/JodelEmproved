@@ -94,21 +94,11 @@
 
 //Enable Uploading From Gallery
 %hook ImageCaptureViewController
-- (void)viewDidLoad{
-    %orig;
+- (void)handleGalleryTap:(id)sender{
     if([[JDESettingsManager sharedInstance] featureStateForTag:1]){
-        [[JDESettingsManager sharedInstance] logString:@"Adding image upload button"];
-        UIView *view = [self viewIfLoaded];
-        UIButton *realGalleryBtn = nil;
-        for(id temp in view.subviews){
-            if([temp isMemberOfClass:objc_getClass("Jodel.ButtonWithBanner")]){ realGalleryBtn = temp; }
-        }
-        UIButton *btn = [[[JDEButtons alloc] init] buttonWithImageNamed:@"arrow.up.circle.fill"];
-        [btn addTarget:self action:@selector(JDEuploadImage:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:btn];
-        //Constraints
-        [btn.trailingAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.leadingAnchor constant:-20].active = YES;
-        [btn.bottomAnchor constraintEqualToAnchor:realGalleryBtn.safeAreaLayoutGuide.bottomAnchor constant:-7].active = YES;
+        [self JDEuploadImage:sender];
+    }else{
+        %orig;
     }
 }
 
@@ -293,24 +283,24 @@
         }
 
         UIAction *copy = [UIAction actionWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"copy"] 
-                                                    image:[UIImage systemImageNamed:@"doc.on.doc"] identifier:nil handler:^(UIAction *handler) {
-                                                        //Handle copying for normal and poll main feed cells
-                                                        if([cellClass isEqualToString:@"Jodel.JDLFeedPostCell"] 
-                                                            || [cellClass isEqualToString:@"Jodel.FeedPollCell"]){
-                                                                UIPasteboard.generalPasteboard.string = [[[cell.contentView subviews][1] contentLabel] text];
-                                                                [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
-                                                        }
-                                                        //Copying for sub posts
-                                                        else if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCell"]){
-                                                            //Change cell type to access methods interfaced methods
-                                                            JDLPostDetailsPostCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                                                            UIPasteboard.generalPasteboard.string = [[cell contentLabel] text];
-                                                            [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
-                                                        }
-                                                        else{
-                                                            [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Failed to copy for (%@)", cellClass]];
-                                                        }
-                                                    }];
+            image:[UIImage systemImageNamed:@"doc.on.doc"] identifier:nil handler:^(UIAction *handler) {
+                //Handle copying for normal and poll main feed cells
+                if([cellClass isEqualToString:@"Jodel.JDLFeedPostCell"] 
+                    || [cellClass isEqualToString:@"Jodel.FeedPollCell"]){
+                        UIPasteboard.generalPasteboard.string = [[[cell.contentView subviews][1] contentLabel] text];
+                        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
+                }
+                //Copying for sub posts
+                else if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCell"]){
+                    //Change cell type to access methods interfaced methods
+                    JDLPostDetailsPostCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+                    UIPasteboard.generalPasteboard.string = [[cell contentLabel] text];
+                    [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
+                }
+                else{
+                    [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Failed to copy for (%@)", cellClass]];
+                }
+            }];
 
         [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"show context menu for post (%@)", cellClass]];
         UIMenu *menu = [UIMenu menuWithTitle:@"" children:@[copy]];
