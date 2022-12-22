@@ -38,7 +38,17 @@
     lpgr.minimumPressDuration = .5;
     [_mapView addGestureRecognizer:lpgr];
     //add pin at 0, 0
-    _pin = [MKPointAnnotation new];
+    NSString *lastCoords = [JDESettingsManager.sharedInstance spoofedLocation];
+    if(lastCoords != nil){
+        NSArray *coordsArray = [lastCoords componentsSeparatedByString:@";"];
+        CLLocationCoordinate2D coords = {
+            [coordsArray[0] doubleValue],
+            [coordsArray[1] doubleValue]};
+
+        self.pin = [[MKPointAnnotation alloc] initWithCoordinate:coords];
+    } else {
+        _pin = [MKPointAnnotation new];
+    }
     [_mapView addAnnotation:_pin];
     
     //Overlay Button
