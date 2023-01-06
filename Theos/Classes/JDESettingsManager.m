@@ -7,8 +7,6 @@
 
 @interface JDESettingsManager()
 @property (strong, nonatomic) NSBundle *bundle;
-@property (strong, nonatomic, readwrite) NSString *logFile;
-@property (nonatomic, readwrite) BOOL logFileExists;
 @end
 
 @implementation JDESettingsManager
@@ -25,9 +23,7 @@
             _bundle = [NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"];
         }
         //logFile stuff
-        NSString *docsDir = [NSHomeDirectory() stringByAppendingPathComponent:@"tmp"];
-        self.logFile = [docsDir stringByAppendingPathComponent:@"JDELogs.log"];
-        self.logFileExists = [[NSFileManager defaultManager] fileExistsAtPath:self.logFile];
+        
     }
     return self;
 }
@@ -136,18 +132,5 @@
 - (NSString*)pathForImageWithName:(NSString*)name{
     return [_bundle pathForResource:name ofType:@"png" inDirectory:@"Icons"];
 }
-- (void)logString:(NSString*)string{
-    string = [[NSString stringWithFormat:@"[%@] ", [[NSDate now] description]] stringByAppendingString:string];
-    string = [string stringByAppendingString:@"\n"];
-    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:self.logFile];
 
-    if(fileHandle){
-        [fileHandle seekToEndOfFile];
-        [fileHandle writeData:[string dataUsingEncoding:NSUTF8StringEncoding]];
-        [fileHandle closeFile];
-    }
-    else{
-        [string writeToFile:self.logFile atomically:YES  encoding:NSUTF8StringEncoding error:nil];
-    }
-}
 @end
