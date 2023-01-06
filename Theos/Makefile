@@ -6,6 +6,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = JodelEmproved
 JodelEmproved_FILES = Tweak.x JDEViewController.m  $(wildcard Classes/*.m)
+JodelEmproved_FILES += Utils/Logging/JELog.m
 JodelEmproved_CFLAGS = -fobjc-arc -Wno-unguarded-availability-new -DPACKAGE_VERSION='@"$(THEOS_PACKAGE_BASE_VERSION)"'
 
 

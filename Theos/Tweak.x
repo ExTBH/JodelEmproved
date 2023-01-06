@@ -1,4 +1,5 @@
 #import "Tweak.h"
+#import "Utils/Logging/JELog.h"
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending) // https://stackoverflow.com/a/5337804
 
@@ -11,22 +12,22 @@
 - (void)viewDidLoad{
     %orig;
     @try{
-        [[JDESettingsManager sharedInstance] logString:@"Adding setting button"];
+        JELog(@"Adding setting button");
         MainFeedViewController *usableSelf = self;
         UIBarButtonItem *statsButton = [[UIBarButtonItem alloc] initWithTitle: [[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"]
-                                                                        style:UIBarButtonItemStyleDone target:self 
-                                                                        action:@selector(presentJDEViewController:)];
+            style:UIBarButtonItemStyleDone target:self 
+            action:@selector(presentJDEViewController:)];
         
         usableSelf.navigationItem.leftBarButtonItem = statsButton;
     }
      @catch(NSException *exception){
-        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Failed to add settings button: %@", exception]];
+        JELog(@"Failed to add settings button: %@", exception);
     }
 }
 
 %new
 -(void)presentJDEViewController:(id)sender{
-    [[JDESettingsManager sharedInstance] logString:@"Presenting settings VC"];
+    JELog(@"Presenting settings VC");
     JDEViewController *settingsVC = [JDEViewController new];
     settingsVC.title = [[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"];
     UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
@@ -45,7 +46,7 @@
             return YES;
         if (action == @selector(selectAll:))
             return YES;
-            }
+    }
     return %orig;
 }
 
@@ -58,7 +59,7 @@
     PictureFeedViewController *usuableSelf = self;
     %orig;
     if([[JDESettingsManager sharedInstance] featureStateForTag:0]){
-        [[JDESettingsManager sharedInstance] logString:@"Adding image save button"];
+        JELog(@"Adding image save button");
         UIView *view = [self viewIfLoaded];
         UIButton *btn = [[[JDEButtons alloc] init] buttonWithImageNamed:@"arrow.down.circle.fill"];
         [btn addTarget:self action:@selector(JDEsaveImage:) forControlEvents:UIControlEventTouchUpInside];
@@ -72,7 +73,7 @@
 %new
 - (bool)JDEsaveImage:(id)sender{
     @try{
-        [[JDESettingsManager sharedInstance] logString:@"Saving image"];
+        JELog(@"Saving image");
         UIView *view = [self view];
         view = [[view subviews] firstObject];
         UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0f);
@@ -80,11 +81,11 @@
         UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         UIImageWriteToSavedPhotosAlbum(capturedImage, nil, nil, nil);
-        [[JDESettingsManager sharedInstance] logString:@"Saved image"];
+        JELog(@"Saved image");
         return YES;
     }
     @catch(NSException *exception){
-        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Failed to save image: %@", exception]];
+        JELog(@"Failed to save image: %@", exception);
         return NO;
     }
 }
@@ -106,7 +107,7 @@
 -(void)JDEuploadImage:(id)sender{
     // IOS 14+ Only!!!!
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"14")){
-        [[JDESettingsManager sharedInstance] logString:@"Selecting image to upload iOS 14+"];
+        JELog(@"Selecting image to upload iOS 14+");
         PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
         config.selectionLimit = 1;
         config.filter = [PHPickerFilter imagesFilter];
@@ -117,7 +118,7 @@
     }
     // IOS 13
     else {
-        [[JDESettingsManager sharedInstance] logString:@"Selecting image to upload iOS 13-"];
+        JELog(@"Selecting image to upload iOS 13-");
         UIImagePickerController *picker = [UIImagePickerController new];
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         picker.delegate = self;
@@ -134,9 +135,9 @@
     [result.itemProvider loadObjectOfClass:UIImage.self
                             completionHandler:^(UIImage* image, NSError *error){
         if(error){
-            [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Failed to select image iOS 14+: %@", error.description]];
+            JELog(@"Failed to select image iOS 14+: %@", error.description);
         } else{
-            [[JDESettingsManager sharedInstance] logString:@"Selected image to upload iOS 14+"];
+            JELog(@"Selected image to upload iOS 14+");
             [self loadImage:image];
         }
     }];
@@ -145,7 +146,7 @@
 %new
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info{
     [picker dismissViewControllerAnimated:YES completion:^(){
-        [[JDESettingsManager sharedInstance] logString:@"Selected image to upload iOS 13-"];
+        JELog(@"Selected image to upload iOS 13-");
         [self loadImage:info[UIImagePickerControllerOriginalImage]];
     }];
 }
@@ -157,7 +158,7 @@
 
 %new
 - (void)loadImage:(UIImage*)image{
-    [[JDESettingsManager sharedInstance] logString:@"Loading selected image"];
+    JELog(@"Loading selected image");
     dispatch_async(dispatch_get_main_queue(), ^{
         // JDLAVCamCaptureManager is the captureManager iVar but its swift not hook-able
         [self captureManagerStillImageCaptured:[NSClassFromString(@"JDLAVCamCaptureManager") new] image:image];
@@ -169,7 +170,7 @@
 %hook ScreenshotService
 - (void)madeScreenshot{
     if([[JDESettingsManager sharedInstance] featureStateForTag:6]){
-        [[JDESettingsManager sharedInstance] logString:@"Bypassed Screenshot"];
+        JELog(@"Bypassed Screenshot");
         return;
         }
     return %orig;
@@ -182,7 +183,7 @@
 - (id)lastStoredUserLocation{
     if([[JDESettingsManager sharedInstance] featureStateForTag:2]){ 
         NSString *spoofedLoc = [[JDESettingsManager sharedInstance] spoofedLocation];
-        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Spoofed location to %@", spoofedLoc]];
+        JELog(@"Spoofed location to %@", spoofedLoc);
         return spoofedLoc;
         }
     return %orig;
@@ -194,7 +195,7 @@
 - (void)tappedSend{
     
     if([[JDESettingsManager sharedInstance] featureStateForTag:5]){
-        [[JDESettingsManager sharedInstance] logString:@"Confirm reply called"];
+        JELog(@"Confirm reply called");
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_reply_title"] 
                                     message:nil
                                     preferredStyle:UIAlertControllerStyleAlert];
@@ -215,7 +216,7 @@
 
 - (void)downvoteTap:(id)sender{
     if([[JDESettingsManager sharedInstance] featureStateForTag:4]){
-        [[JDESettingsManager sharedInstance] logString:@"Confirm downvote called"];
+        JELog(@"Confirm downvote called");
         UIViewController *topVC = [self firstAvailableUIViewController:self];
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_vote_title"] 
                                     message:nil
@@ -232,7 +233,7 @@
 }
 - (void)upvoteTap:(id)sender{
     if([[JDESettingsManager sharedInstance] featureStateForTag:4]){
-        [[JDESettingsManager sharedInstance] logString:@"Confirm upvote called"];
+        JELog(@"Confirm upvote called");
         UIViewController *topVC = [self firstAvailableUIViewController:self];
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"confirm_vote_title"] 
                                     message:nil
@@ -277,7 +278,7 @@
                                     @"Jodel.JDLPostDetailsPostMediaCell"];
         for(NSString *bannedClass in bannedClasses){
             if([cellClass isEqualToString:bannedClass]){ 
-                [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"don't show context menu for post (%@)", cellClass]];
+                JELog(@"don't show context menu for post (%@)", cellClass);
                 return nil;
                 }
         }
@@ -288,23 +289,27 @@
                 if([cellClass isEqualToString:@"Jodel.JDLFeedPostCell"] 
                     || [cellClass isEqualToString:@"Jodel.FeedPollCell"]){
                         UIPasteboard.generalPasteboard.string = [[[cell.contentView subviews][1] contentLabel] text];
-                        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
+                        JELog(@"Successfully copied for (%@)", cellClass);
                 }
                 //Copying for sub posts
                 else if([cellClass isEqualToString:@"Jodel.JDLPostDetailsPostCell"]){
                     //Change cell type to access methods interfaced methods
                     JDLPostDetailsPostCell *cell = [tableView cellForRowAtIndexPath:indexPath];
                     UIPasteboard.generalPasteboard.string = [[cell contentLabel] text];
-                    [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Successfully copied for (%@)", cellClass]];
+                    JELog(@"Successfully copied for (%@)", cellClass);
                 }
                 else{
-                    [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"Failed to copy for (%@)", cellClass]];
+                    JELog(@"Failed to copy for (%@)", cellClass);
                 }
             }];
 
-        [[JDESettingsManager sharedInstance] logString:[NSString stringWithFormat:@"show context menu for post (%@)", cellClass]];
+        JELog(@"show context menu for post (%@)", cellClass);
         UIMenu *menu = [UIMenu menuWithTitle:@"" children:@[copy]];
-        UIContextMenuConfiguration *menuConfig = [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil actionProvider:^(NSArray *suggestedActions) { return menu;}
+        UIContextMenuConfiguration *menuConfig = [UIContextMenuConfiguration
+            configurationWithIdentifier:nil
+            previewProvider:nil
+            actionProvider:^(NSArray *suggestedActions)
+                { return menu;}
         ];
         
         return  menuConfig;

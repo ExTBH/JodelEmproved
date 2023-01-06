@@ -1,29 +1,41 @@
 #import "JELog.h"
+#import <UIKit/UIKit.h>
 
-
-static NSString *logFilePath(void){
+NSString *logFilePath(void){
     return [NSTemporaryDirectory() stringByAppendingPathComponent:@"JDELogs.log"];
 } 
 
-static void writeString(__kindof NSString *string){
-    NSString * const logFile = logFilePath();
-    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:logFile];
-
-    if(fileHandle == nil){
-        [string writeToFile:logFile atomically:YES encoding:NSUTF8StringEncoding error:nil];
+static void writeString(__kindof NSAttributedString *string){
+    
+    NSError *error;
+    NSRange stringRange = NSMakeRange(0, string.length);
+    NSData *stringData = [string dataFromRange:stringRange
+        documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFTextDocumentType}
+        error:&error];
+    if(stringData == nil){
         return;
     }
+    NSURL * const logFile = [NSURL fileURLWithPath:logFilePath()];
+    NSData *logsDictData = [NSData dataWithContentsOfURL:logFile];
+    
 
-    NSNumber *fileSize = [NSFileManager.defaultManager attributesOfItemAtPath:logFile error:nil][NSFileSize];
-    unsigned long long unsignedFileSize = [fileSize unsignedLongLongValue];
-    if(unsignedFileSize > 102400){
-        [fileHandle closeFile];
-        // TODO: delete file
+    if (logsDictData == nil){
+        NSDictionary *logsDict = @{@"logs": @[stringData]};
+        [logsDict writeToURL:logFile atomically:YES];
+        return;
     }
+    NSMutableDictionary *logsDict = [NSPropertyListSerialization propertyListWithData:logsDictData
+        options:NSPropertyListMutableContainersAndLeaves
+        format:nil
+        error:&error];
 
-    [fileHandle seekToEndReturningOffset:&unsignedFileSize error:nil];
-    [fileHandle writeData:[string dataUsingEncoding:NSUTF8StringEncoding] error:nil];
-    [fileHandle closeFile];
+    if (error != nil){
+        return;
+    }
+    [logsDict[@"logs"] addObject:stringData];
+
+    [logsDict writeToURL:logFile atomically:YES];
+
 }
 
 // https://codereview.stackexchange.com/a/48207
@@ -35,14 +47,25 @@ void JELog(NSString *format, ...){
         [timeStampFormat setTimeZone:[NSTimeZone systemTimeZone]];
     }
 
-    NSString* timestamp = [timeStampFormat stringFromDate:[NSDate date]];
+    NSDictionary<NSAttributedStringKey, id> *attrs = @{
+        NSForegroundColorAttributeName: UIColor.systemYellowColor
+    };
+
+    NSString *dateString = [NSString stringWithFormat:@"[%@]", [NSDate date]];
+    NSAttributedString *timestamp = [[NSAttributedString alloc]
+        initWithString:dateString attributes:attrs];
 
     va_list vargs;
     va_start(vargs, format);
     NSString* formattedMessage = [[NSString alloc] initWithFormat:format arguments:vargs];
     va_end(vargs);
-    // TODO: make time stamp colored
-    NSString* message = [NSString stringWithFormat:@"[%@] %@", timestamp, formattedMessage];
+    formattedMessage = [NSString stringWithFormat:@" %@", formattedMessage];
+    NSAttributedString *attrFormattedMessage = [[NSAttributedString alloc] initWithString:formattedMessage
+        attributes:@{NSForegroundColorAttributeName: UIColor.labelColor}];
+
+
+    NSMutableAttributedString *message = [[NSMutableAttributedString alloc] initWithAttributedString:timestamp];
+    [message appendAttributedString:attrFormattedMessage];
 
     writeString(message);
 }
