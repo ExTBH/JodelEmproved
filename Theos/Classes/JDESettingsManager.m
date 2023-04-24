@@ -2,6 +2,7 @@
 #include <Foundation/NSString.h>
 #include <Foundation/NSObjCRuntime.h>
 #include <UIKit/UIColor.h>
+#import <rootless.h>
 
 #define suiteName "dev.extbh.jodelemproved"
 
@@ -20,10 +21,9 @@
             _bundle = [NSBundle bundleWithPath:bundlePath];
             }
         else{
-            _bundle = [NSBundle bundleWithPath:@"Library/Application Support/Jodel EMPROVED.bundle"];
+            static NSString * const path = ROOT_PATH_NS("/Library/Application Support/Jodel EMPROVED.bundle");
+            _bundle = [NSBundle bundleWithPath:path];
         }
-        //logFile stuff
-        
     }
     return self;
 }

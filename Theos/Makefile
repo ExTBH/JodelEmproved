@@ -1,4 +1,5 @@
-TARGET := iphone:clang:latest:13.0
+export ARCHS = arm64
+TARGET := iphone:clang:14.5:13.0
 INSTALL_TARGET_PROCESSES = Jodel
 
 

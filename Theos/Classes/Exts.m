@@ -1,5 +1,5 @@
 #import "Exts.h"
-#include "Classes/JDESettingsManager.h"
+#include "JDESettingsManager.h"
 #include <Foundation/NSError.h>
 #include <Foundation/Foundation.h>
 #include <UIKit/UIColor.h>

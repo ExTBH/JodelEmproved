@@ -14,7 +14,7 @@
     @try{
         JELog(@"Adding setting button");
         MainFeedViewController *usableSelf = self;
-        UIBarButtonItem *statsButton = [[UIBarButtonItem alloc] initWithTitle: [[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"]
+        UIBarButtonItem *statsButton = [[UIBarButtonItem alloc] initWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"]
             style:UIBarButtonItemStyleDone target:self 
             action:@selector(presentJDEViewController:)];
         

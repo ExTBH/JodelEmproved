@@ -6,7 +6,7 @@
     //init
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
     btn.translatesAutoresizingMaskIntoConstraints = NO;
-    [btn setImage:[UIImage systemImageNamed:image] forState:UIControlStateNormal]; //@"arrow.down.circle"
+    [btn setImage:[UIImage systemImageNamed:image] forState:UIControlStateNormal];
     //colors
     [btn setTintColor:[UIColor whiteColor]];
     //sizes

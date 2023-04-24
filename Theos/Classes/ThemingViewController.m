@@ -1,5 +1,5 @@
 #import "ThemingViewController.h"
-#include "Classes/JDESettingsManager.h"
+#include "JDESettingsManager.h"
 
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending) // https://stackoverflow.com/a/5337804
