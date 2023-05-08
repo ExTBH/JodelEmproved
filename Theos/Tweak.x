@@ -1,10 +1,7 @@
 #import "Tweak.h"
 #import "Utils/Logging/JELog.h"
 
-#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending) // https://stackoverflow.com/a/5337804
-
 //Add Settings button
-
 @interface MainFeedViewController : UIViewController
 @end
 
@@ -105,25 +102,14 @@
 
 %new
 -(void)JDEuploadImage:(id)sender{
-    // IOS 14+ Only!!!!
-    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"14")){
-        JELog(@"Selecting image to upload iOS 14+");
-        PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
-        config.selectionLimit = 1;
-        config.filter = [PHPickerFilter imagesFilter];
-        PHPickerViewController *photoPicker = [[PHPickerViewController alloc] initWithConfiguration:config];
-        photoPicker.delegate = self;
+    JELog(@"Selecting image to upload");
+    PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
+    config.selectionLimit = 1;
+    config.filter = [PHPickerFilter imagesFilter];
+    PHPickerViewController *photoPicker = [[PHPickerViewController alloc] initWithConfiguration:config];
+    photoPicker.delegate = self;
 
-        [self presentViewController:photoPicker animated:YES completion:nil];
-    }
-    // IOS 13
-    else {
-        JELog(@"Selecting image to upload iOS 13-");
-        UIImagePickerController *picker = [UIImagePickerController new];
-        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        picker.delegate = self;
-        [self presentViewController:picker animated:YES completion:nil];
-    }
+    [self presentViewController:photoPicker animated:YES completion:nil];
 }
 //iOS14 and up
 %new
@@ -142,19 +128,6 @@
         }
     }];
 }
-//iOS13 and below
-%new
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info{
-    [picker dismissViewControllerAnimated:YES completion:^(){
-        JELog(@"Selected image to upload iOS 13-");
-        [self loadImage:info[UIImagePickerControllerOriginalImage]];
-    }];
-}
-%new
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
-
 
 %new
 - (void)loadImage:(UIImage*)image{
