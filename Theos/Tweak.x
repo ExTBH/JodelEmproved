@@ -3,23 +3,45 @@
 
 //Add Settings button
 @interface MainFeedViewController : UIViewController
+@property (nonatomic, strong) UIBarButtonItem *settingsButton;
+- (void)addSettingsButton;
 @end
 
 %hook MainFeedViewController
+%property (nonatomic, strong) UIBarButtonItem *settingsButton;
+
 - (void)viewDidLoad{
     %orig;
-    @try{
-        JELog(@"Adding setting button");
-        MainFeedViewController *usableSelf = self;
-        UIBarButtonItem *statsButton = [[UIBarButtonItem alloc] initWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"]
-            style:UIBarButtonItemStyleDone target:self 
-            action:@selector(presentJDEViewController:)];
-        
-        usableSelf.navigationItem.leftBarButtonItem = statsButton;
+    [self addSettingsButton];
+    [self addObserver:self forKeyPath:@"navigationItem" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)dealloc {
+    // Remove observer to avoid memory leaks
+    [self removeObserver:self forKeyPath:@"navigationItem"];
+    %orig;
+}
+
+%new
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    // Check if the observed keyPath is "navigationItem"
+    if ([keyPath isEqualToString:@"navigationItem"]) {
+        // Re-add the button whenever the navigationItem changes
+        [self addSettingsButton];
     }
-     @catch(NSException *exception){
-        JELog(@"Failed to add settings button: %@", exception);
-    }
+}
+%new
+- (void)addSettingsButton {
+    // Create the button
+    MainFeedViewController *usableSelf = self;
+    usableSelf.settingsButton = [[UIBarButtonItem alloc] initWithTitle:[[JDESettingsManager sharedInstance] localizedStringForKey:@"emproved"]
+                            style:UIBarButtonItemStyleDone
+                            target:self
+                            action:@selector(presentJDEViewController:)];
+    
+    // Add the button to the navigation item
+    
+    usableSelf.navigationItem.leftBarButtonItem = usableSelf.settingsButton;
 }
 
 %new
